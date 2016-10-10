@@ -1,2 +1,5 @@
 # PyPrintTool
-PyPi printtool: pip install printtool
+PyPi printtool
+```
+pip install printtool
+```
