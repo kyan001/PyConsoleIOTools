@@ -1,6 +1,6 @@
 from functools import wraps
 
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 
 
 def as_session(name=''):  # decorator
@@ -30,6 +30,11 @@ def end():
     print('!')
 
 
+def br(count=1):
+    """print 1 to N blank lines"""
+    print('\n' * (count - 1))
+
+
 def echo(msg, pre="", lvl=0):
     msg = str(msg)
     prefix = '({}) '.format(pre.capitalize()) if pre else ''
@@ -37,9 +42,13 @@ def echo(msg, pre="", lvl=0):
     print("| {pf}{tabs}{msg}".format(pf=prefix, tabs=tabs, msg=msg))
 
 
-def title(msg):
+def title(msg, **options):
     """print something like a title"""
-    return echo(msg + ":")
+    return echo(msg + ":", **options)
+
+
+def ask(msg, **options):
+    return echo(msg, "?", **options)
 
 
 def info(msg, **options):
