@@ -1,9 +1,10 @@
 import unittest
 import sys
-sys.path.insert(0, '../')
 
 import FakeIn
 import FakeOut
+
+sys.path.insert(0, '../')
 import consoleiotools as cit
 
 
@@ -94,3 +95,4 @@ class test_consoleiotools(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, exit=False)
+    cit.pause()

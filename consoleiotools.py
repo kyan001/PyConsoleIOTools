@@ -3,7 +3,7 @@ from functools import wraps
 __version__ = '1.0.0'
 
 
-def as_session(title=''):  # decorator
+def as_session(name=''):  # decorator
     """print start/title/end info before and after the function call
 
     Args:
@@ -13,8 +13,8 @@ def as_session(title=''):  # decorator
         @wraps(func)
         def call_func(*args, **kwargs):
             start()
-            if title:
-                title(title)
+            if name:
+                title(name)
             result = func(*args, **kwargs)
             end()
             return result
