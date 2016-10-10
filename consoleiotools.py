@@ -30,15 +30,15 @@ def end():
     print('!')
 
 
-def echo(msg, prefix="", lvl=0):
+def echo(msg, pre="", lvl=0):
     msg = str(msg)
-    if prefix:
-        prefix = '({})'.format(prefix.capitalize()) + ' '
+    prefix = '({}) '.format(pre.capitalize()) if pre else ''
     tabs = '    ' * int(lvl) if int(lvl) else ''
     print("| {pf}{tabs}{msg}".format(pf=prefix, tabs=tabs, msg=msg))
 
 
 def title(msg):
+    """print something like a title"""
     return echo(msg + ":")
 
 
@@ -54,12 +54,12 @@ def err(msg, **options):
     return echo(msg, "error", **options)
 
 
-def pause(cls, msg="Press Enter to Continue..."):
+def pause(msg="Press Enter to Continue..."):
     """press to continue"""
     input('\n' + msg)
 
 
-def bye(cls, msg=''):
+def bye(msg=''):
     """print msg and exit"""
     exit(msg)
 
