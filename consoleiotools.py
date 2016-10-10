@@ -1,6 +1,6 @@
 from functools import wraps
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 
 def as_session(name=''):  # decorator
@@ -44,7 +44,7 @@ def echo(msg, pre="", lvl=0):
 
 def title(msg, **options):
     """print something like a title"""
-    return echo(msg + ":", **options)
+    return echo("__{}__________________________".format(msg.upper()), **options)
 
 
 def ask(msg, **options):

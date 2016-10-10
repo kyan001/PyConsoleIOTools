@@ -10,7 +10,7 @@ import consoleiotools as cit
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '1.1.0'
+    cit_version = '1.2.0'
 
     def setUp(self):
         self.console_out = sys.stdout
@@ -56,7 +56,7 @@ class test_consoleiotools(unittest.TestCase):
 
     def test_title(self):
         cit.title("ABC")
-        self.assertEqual(self.fakeout.readline(), '| ABC:\n')
+        self.assertEqual(self.fakeout.readline(), '| __ABC__________________________\n')
 
     def test_ask(self):
         cit.ask("ABC")

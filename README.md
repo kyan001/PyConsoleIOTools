@@ -16,7 +16,7 @@ print(cit.__version__)
 *
 
 >>> cit.title('Session Name')
-| Session Name:
+| __SESSION NAME__________________________
 
 >>> cit.echo('Hello World')
 | Hello World
