@@ -35,3 +35,10 @@ cit.pause()
 cit.bye()
 cit.bye('Seeya')
 ```
+
+## Decorators
+```python
+@cit.as_session('Session Name')
+def my_func():
+    do_stuff()
+```
