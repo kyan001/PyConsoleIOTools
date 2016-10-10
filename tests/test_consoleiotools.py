@@ -10,7 +10,7 @@ import consoleiotools as cit
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '1.0.0'
+    cit_version = '1.0.1'
 
     def setUp(self):
         self.console_out = sys.stdout
