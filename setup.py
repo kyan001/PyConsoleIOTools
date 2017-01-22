@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='consoleiotools',
-    version='1.2.0',
+    version='2.0.0',
     description='Some console tools for inputs and outputs',
     long_description='Some console tools for inputs and outputs, by Kyan',
     url='https://github.com/kyan001/PyConsoleIOTools',
@@ -24,7 +24,7 @@ setup(
     keywords='console input output tool',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     py_modules=["consoleiotools"],
-    install_requires=[],
+    install_requires=['colorama'],
     extras_require={},
     package_data={},
     data_files=[],

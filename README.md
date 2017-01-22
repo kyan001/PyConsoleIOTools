@@ -21,17 +21,14 @@ print(cit.__version__)
 >>> cit.echo('Hello World')
 | Hello World
 
->>> cit.echo('Hello World', pre='say', lvl=1)
-| (Say)     Hello World
+>>> cit.echo('Hello World', pre='say')
+| (Say) Hello World
 
 >>> cit.ask('Hello World')
 | (?) Hello World
 
 >>> cit.info('Hello World')
 | (Info) Hello World
-
->>> cit.info('Hello World', lvl=2)
-| (Info)         Hello World
 
 >>> cit.warn('Hello World')
 | (Warning) Hello World

@@ -1,6 +1,10 @@
 from functools import wraps
+import colorama
+from colorama import Fore, Back, Style
+colorama.init()
 
-__version__ = '1.2.0'
+
+__version__ = '2.0.0'
 
 
 def as_session(name=''):  # decorator
@@ -35,20 +39,18 @@ def br(count=1):
     print('\n' * (count - 1))
 
 
-def echo(msg, pre="", lvl=0):
-    msg = str(msg)
-    prefix = '({}) '.format(pre.capitalize()) if pre else ''
-    tabs = '    ' * int(lvl) if int(lvl) else ''
-    print("| {pf}{tabs}{msg}".format(pf=prefix, tabs=tabs, msg=msg))
+def echo(msg, pre=""):
+    prefix = Style.DIM + '({}) '.format(pre.capitalize()) + Style.RESET_ALL if pre else ''
+    print(Back.BLACK + "| {pf}{msg}".format(pf=prefix, msg=msg) + Back.RESET + Fore.RESET + Style.RESET_ALL)
 
 
 def title(msg, **options):
     """print something like a title"""
-    return echo("__{}__________________________".format(msg.upper()), **options)
+    return echo(Style.BRIGHT + Fore.CYAN + "__{}__________________________".format(msg.upper()) + Style.RESET_ALL + Fore.RESET, **options)
 
 
 def ask(msg, **options):
-    return echo(msg, "?", **options)
+    return echo(Fore.YELLOW + msg, "?", **options)
 
 
 def info(msg, **options):
@@ -56,16 +58,17 @@ def info(msg, **options):
 
 
 def warn(msg, **options):
-    return echo(msg, "warning", **options)
+    return echo(Fore.RED + msg, "warning", **options)
 
 
 def err(msg, **options):
-    return echo(msg, "error", **options)
+    return echo(Fore.RED + Style.BRIGHT + msg, "error", **options)
 
 
 def pause(msg="Press Enter to Continue..."):
     """press to continue"""
-    input('\n' + msg)
+    print('\n' + Fore.YELLOW + msg + Fore.RESET, end='')
+    input()
 
 
 def bye(msg=''):
@@ -75,16 +78,17 @@ def bye(msg=''):
 
 def get_input(question='', prompt='> '):
     if question:
-        print(question)
+        ask(question)
     return str(input(prompt)).strip()
 
 
 def get_choice(choices):
-    assemble_print = ""
     for index, item in enumerate(choices):
-        assemble_print += '\n' if index else ''
-        assemble_print += "| " + " {}) ".format(str(index + 1)) + str(item)
-    user_choice = get_input(assemble_print)
+        assemble_print = ""
+        assemble_print += Fore.YELLOW + " {}) ".format(str(index + 1)) + Fore.RESET
+        assemble_print += Fore.WHITE + str(item) + Fore.RESET
+        echo(assemble_print)
+    user_choice = get_input().strip()
     if user_choice in choices:
         return user_choice
     elif user_choice.isdigit():
