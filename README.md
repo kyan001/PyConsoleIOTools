@@ -87,7 +87,7 @@ def my_func():
 
 >>> my_func()
 *
-| Hello:
+| __HELLO__________________________
 | World
 !
 ```

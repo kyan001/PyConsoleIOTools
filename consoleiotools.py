@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 
 
 def as_session(name=''):  # decorator
@@ -40,7 +40,7 @@ def br(count=1):
 
 
 def echo(msg, pre=""):
-    prefix = Style.DIM + '({}) '.format(pre.capitalize()) + Style.RESET_ALL if pre else ''
+    prefix = Style.DIM + Fore.WHITE + '({}) '.format(pre.capitalize()) + Fore.RESET + Style.RESET_ALL if pre else ''
     print(Back.BLACK + "| {pf}{msg}".format(pf=prefix, msg=msg) + Back.RESET + Fore.RESET + Style.RESET_ALL)
 
 
