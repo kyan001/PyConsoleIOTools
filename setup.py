@@ -7,7 +7,7 @@ setup(
     long_description='Some console tools for inputs and outputs, by Kyan',
     url='https://github.com/kyan001/PyConsoleIOTools',
     author='Kai Yan',
-    author_email='kai@superfarmer.net',
+    author_email='kai@kyan001.com',
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
