@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.0.3'
+__version__ = '2.0.4'
 
 
 def as_session(name=''):  # decorator
@@ -31,7 +31,7 @@ def start():
 
 
 def end():
-    print('!')
+    print('`')
 
 
 def br(count=1):

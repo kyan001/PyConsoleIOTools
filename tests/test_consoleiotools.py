@@ -10,7 +10,7 @@ import consoleiotools as cit
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.0.3'
+    cit_version = '2.0.4'
 
     def setUp(self):
         self.console_out = sys.stdout
@@ -35,7 +35,7 @@ class test_consoleiotools(unittest.TestCase):
 
     def test_end(self):
         cit.end()
-        self.assertEqual(self.fakeout.readline(ansi=False), '!\n')
+        self.assertEqual(self.fakeout.readline(ansi=False), '`\n')
 
     def test_br(self):
         cit.br(2)
@@ -95,6 +95,7 @@ class test_consoleiotools(unittest.TestCase):
         self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
         expect_word = "|  1) ABC\n|  2) DEF\n> "
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, exit=False)
