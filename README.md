@@ -37,7 +37,7 @@ print(cit.__version__)
 | (Error) Hello World
 
 >>> cit.end()
-!
+`
 
 >>> cit.br()
 # blank line
