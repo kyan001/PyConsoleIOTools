@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.1.5'
+__version__ = '2.1.6'
 
 
 def as_session(name_or_func):  # decorator
@@ -13,7 +13,7 @@ def as_session(name_or_func):  # decorator
     Args:
         title: title will show after the start, if has any
     """
-    if not isinstance(name_or_func, str):  # no name provided
+    if callable(name_or_func):  # no name provided
         func = name_or_func
         name = func.__name__
         name = "".join([(' ' + x) if x.isupper() else x for x in name])
