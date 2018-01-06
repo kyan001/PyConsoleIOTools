@@ -114,6 +114,15 @@ class test_consoleiotools(unittest.TestCase):
         expect_word = "*\n| __DEF__________________________\nABC\n`\n"
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
 
+    def test_as_session_3(self):
+        @cit.as_session
+        def under_scoreCamal():
+            print('ABC')
+
+        under_scoreCamal()
+        expect_word = "*\n| __UNDER SCORE CAMAL__________________________\nABC\n`\n"
+        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, exit=False)
