@@ -98,29 +98,29 @@ class test_consoleiotools(unittest.TestCase):
 
     def test_as_session_1(self):
         @cit.as_session
-        def noname():
+        def func():
             print('ABC')
 
-        noname()
-        expect_word = "*\n| __NONAME__________________________\nABC\n`\n"
+        func()
+        expect_word = "*\n| __FUNC__________________________\nABC\n`\n"
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
 
     def test_as_session_2(self):
         @cit.as_session('DEF')
-        def hasname():
+        def func():
             print('ABC')
 
-        hasname()
+        func()
         expect_word = "*\n| __DEF__________________________\nABC\n`\n"
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
 
     def test_as_session_3(self):
         @cit.as_session
-        def under_scoreCamal():
+        def underscore_orCamel():
             print('ABC')
 
-        under_scoreCamal()
-        expect_word = "*\n| __UNDER SCORE CAMAL__________________________\nABC\n`\n"
+        underscore_orCamel()
+        expect_word = "*\n| __UNDERSCORE OR CAMEL__________________________\nABC\n`\n"
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
 
 

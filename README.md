@@ -89,5 +89,15 @@ def my_func():
 *
 | __HELLO__________________________
 | World
-!
+`
+
+@cit.as_session
+def underscore_orCamel():
+    pass
+
+>>> underscore_orCamel()
+*
+| __UNDERSCORE OR CAMEL__________________________
+`
+
 ```
