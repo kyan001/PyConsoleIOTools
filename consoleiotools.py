@@ -4,25 +4,33 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.0.3'
+__version__ = '2.1.5'
 
 
-def as_session(name=''):  # decorator
+def as_session(name_or_func):  # decorator
     """print start/title/end info before and after the function call
 
     Args:
         title: title will show after the start, if has any
     """
+    if not isinstance(name_or_func, str):  # no name provided
+        func = name_or_func
+        name = func.__name__
+        name = "".join([(' ' + x) if x.isupper() else x for x in name])
+        name = name.replace('_', ' ')
+        return as_session(name)(func)  # deco(func) -> deco(name)(func)
+    else:
+        name = name_or_func
+
     def get_func(func):
         @wraps(func)
-        def call_func(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             start()
-            if name:
-                title(name)
+            title(name)
             result = func(*args, **kwargs)
             end()
             return result
-        return call_func
+        return wrapper
     return get_func
 
 
@@ -46,7 +54,7 @@ def echo(msg, pre=""):
 
 def title(msg, **options):
     """print something like a title"""
-    return echo(Style.BRIGHT + Fore.CYAN + "__{}__________________________".format(msg.upper()) + Style.RESET_ALL + Fore.RESET, **options)
+    return echo(Style.BRIGHT + Fore.CYAN + "__{}__________________________".format(msg.upper().strip()) + Style.RESET_ALL + Fore.RESET, **options)
 
 
 def ask(msg, **options):

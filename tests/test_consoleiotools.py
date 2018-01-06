@@ -10,7 +10,7 @@ import consoleiotools as cit
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.0.3'
+    cit_version = '2.1.5'
 
     def setUp(self):
         self.console_out = sys.stdout
@@ -95,6 +95,25 @@ class test_consoleiotools(unittest.TestCase):
         self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
         expect_word = "|  1) ABC\n|  2) DEF\n> "
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
+    def test_as_session_1(self):
+        @cit.as_session
+        def noname():
+            print('ABC')
+
+        noname()
+        expect_word = "*\n| __NONAME__________________________\nABC\n`\n"
+        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
+    def test_as_session_2(self):
+        @cit.as_session('DEF')
+        def hasname():
+            print('ABC')
+
+        hasname()
+        expect_word = "*\n| __DEF__________________________\nABC\n`\n"
+        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2, exit=False)
