@@ -39,7 +39,7 @@ def start():
 
 
 def end():
-    print('!')
+    print('`')
 
 
 def br(count=1):

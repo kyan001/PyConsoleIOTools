@@ -35,7 +35,7 @@ class test_consoleiotools(unittest.TestCase):
 
     def test_end(self):
         cit.end()
-        self.assertEqual(self.fakeout.readline(ansi=False), '!\n')
+        self.assertEqual(self.fakeout.readline(ansi=False), '`\n')
 
     def test_br(self):
         cit.br(2)
