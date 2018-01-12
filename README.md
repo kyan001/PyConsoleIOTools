@@ -1,4 +1,6 @@
 # PyConsoleIOTools
+[![Build Status](https://travis-ci.org/kyan001/PyConsoleIOTools.svg?branch=master)](https://travis-ci.org/kyan001/PyConsoleIOTools)
+
 ## Installation
 ```
 pip install consoleiotools
@@ -74,6 +76,9 @@ Press Enter to Continue...
 >>> cit.bye()
 # exit
 
+>>> cit.bye(0)
+# exit with code 0
+
 >>> cit.bye('Seeya')
 Seeya
 # exit
@@ -99,5 +104,4 @@ def underscore_orCamel():
 *
 | __UNDERSCORE OR CAMEL__________________________
 `
-
 ```
