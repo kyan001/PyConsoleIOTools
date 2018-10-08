@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.1.6'
+__version__ = '2.2.1'
 
 
 def as_session(name_or_func):  # decorator
@@ -108,3 +108,17 @@ def get_choice(choices):
     else:
         err("Please enter a valid choice")
         return get_choice(choices)
+
+
+def read_file(path, with_encoding=False, **kwargs):
+    for enc in ("utf-8", 'gbk', 'cp1252', 'windows-1252', 'latin-1'):
+        try:
+            with open(path, mode='r', encoding=enc, **kwargs) as f:
+                return (f.read(), enc) if with_encoding else f.read()
+        except UnicodeDecodeError:
+            pass
+
+
+def write_file(path, content):
+    with open(path, mode='a', encoding='utf-8') as f:
+        return f.write(content)

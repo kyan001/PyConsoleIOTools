@@ -1,5 +1,6 @@
 import unittest
 import sys
+import os
 
 import FakeIn
 import FakeOut
@@ -10,7 +11,8 @@ import consoleiotools as cit
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.1.6'
+    cit_version = '2.2.1'
+    TMP_FILE = "tmp.txt"
 
     def setUp(self):
         self.console_out = sys.stdout
@@ -25,6 +27,8 @@ class test_consoleiotools(unittest.TestCase):
         self.fakein.clean()
         sys.stdout = self.console_out
         sys.stdin = self.console_in
+        if os.path.isfile(self.TMP_FILE):
+            os.remove(self.TMP_FILE)
 
     def test_version(self):
         self.assertEqual(self.cit_version, cit.__version__)
@@ -122,6 +126,23 @@ class test_consoleiotools(unittest.TestCase):
         underscore_orCamel()
         expect_word = "*\n| __UNDERSCORE OR CAMEL__________________________\nABC\n`\n"
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
+    def test_write_file(self):
+        content = "3.1415926"
+        len_write = cit.write_file(self.TMP_FILE, content)
+        self.assertEqual(len_write, len(content))
+
+    def test_read_file_1(self):
+        content = "3.1415926"
+        len_write = cit.write_file(self.TMP_FILE, content)
+        content_read = cit.read_file(self.TMP_FILE)
+        self.assertEqual(content_read, content)
+
+    def test_read_file_2(self):
+        content = "3.1415926"
+        len_write = cit.write_file(self.TMP_FILE, content)
+        content_read, encoding = cit.read_file(self.TMP_FILE, with_encoding=True)
+        self.assertEqual(encoding, "utf-8")
 
 
 if __name__ == '__main__':

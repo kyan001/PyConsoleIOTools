@@ -68,6 +68,18 @@ print(cit.__version__)
 'Google'
 ```
 
+## File IO
+```python
+>>> cit.read_file('/path/to/file')
+'File contents'
+
+>>> cit.read_file('/path/to/file', with_encoding=True)
+('File contents', 'utf-8')
+
+>>> cit.write_file('/path/to/file', "Contents")
+8  # writed bytes
+```
+
 ## Controls
 ```python
 >>> cit.pause()
