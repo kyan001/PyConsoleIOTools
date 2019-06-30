@@ -1,5 +1,8 @@
 # PyConsoleIOTools
 [![Build Status](https://travis-ci.org/kyan001/PyConsoleIOTools.svg?branch=master)](https://travis-ci.org/kyan001/PyConsoleIOTools)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/consoleiotools.svg)
+![GitHub release](https://img.shields.io/github/release/kyan001/PyConsoleIOTools.svg)
+[![GitHub license](https://img.shields.io/github/license/kyan001/PyConsoleIOTools.svg)](https://github.com/kyan001/PyConsoleIOTools/blob/master/LICENSE)
 
 ## Installation
 ```
