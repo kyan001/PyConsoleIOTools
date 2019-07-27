@@ -5,7 +5,7 @@ import os
 import FakeIn
 import FakeOut
 
-sys.path.insert(0, '../')
+sys.path.insert(0, os.path.dirname(sys.path[0]))
 import consoleiotools as cit
 
 
