@@ -5,8 +5,9 @@
 [![GitHub license](https://img.shields.io/github/license/kyan001/PyConsoleIOTools.svg)](https://github.com/kyan001/PyConsoleIOTools/blob/master/LICENSE)
 
 ## Installation
-```
-pip install consoleiotools
+```sh
+pip install consoleiotools  # install
+pip install --upgrade consoleiotools  # update
 ```
 
 ## Get Started
@@ -79,7 +80,10 @@ print(cit.__version__)
 >>> cit.read_file('/path/to/file', with_encoding=True)
 ('File contents', 'utf-8')
 
->>> cit.write_file('/path/to/file', "Contents")
+>>> cit.write_file('/path/to/file', 'Contents')  # Append content to file.
+8  # writed bytes
+
+>>> cit.write_file('/path/to/file', 'Contents', overwrite=True)  # Overwrite if file exists.
 8  # writed bytes
 ```
 
@@ -100,6 +104,7 @@ Seeya
 ```
 
 ## Decorators
+
 ```python
 @cit.as_session('Hello')
 def my_func():

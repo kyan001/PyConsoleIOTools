@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='consoleiotools',
-    version='2.2.1',
+    version='2.3.0',
     description='Some console tools for inputs and outputs',
     long_description='Some console tools for inputs and outputs, by Kyan',
     url='https://github.com/kyan001/PyConsoleIOTools',
@@ -19,6 +19,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
     ],
     keywords='console input output tool',
