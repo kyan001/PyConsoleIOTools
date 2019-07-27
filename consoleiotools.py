@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.2.1'
+__version__ = '2.3.0'
 
 
 def as_session(name_or_func):  # decorator
@@ -110,7 +110,7 @@ def get_choice(choices):
         return get_choice(choices)
 
 
-def read_file(path, with_encoding=False, **kwargs):
+def read_file(path: str, with_encoding: bool = False, **kwargs):
     for enc in ("utf-8", 'gbk', 'cp1252', 'windows-1252', 'latin-1'):
         try:
             with open(path, mode='r', encoding=enc, **kwargs) as f:
@@ -119,6 +119,7 @@ def read_file(path, with_encoding=False, **kwargs):
             pass
 
 
-def write_file(path, content):
-    with open(path, mode='a', encoding='utf-8') as f:
-        return f.write(content)
+def write_file(path: str, content: str, overwrite: bool = False, **kwargs):
+    mode = 'w' if overwrite else 'a'
+    with open(path, mode=mode, encoding='utf-8', **kwargs) as fl:
+        return fl.write(content)

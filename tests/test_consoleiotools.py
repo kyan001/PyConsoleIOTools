@@ -11,7 +11,7 @@ import consoleiotools as cit
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.2.1'
+    cit_version = '2.3.0'
     TMP_FILE = "tmp.txt"
 
     def setUp(self):
@@ -132,13 +132,18 @@ class test_consoleiotools(unittest.TestCase):
         len_write = cit.write_file(self.TMP_FILE, content)
         self.assertEqual(len_write, len(content))
 
-    def test_read_file_1(self):
+    def test_write_file_overwrite(self):
+        content = "3.1415926"
+        len_write = cit.write_file(self.TMP_FILE, content, overwrite=True)
+        self.assertEqual(len_write, len(content))
+
+    def test_read_file(self):
         content = "3.1415926"
         len_write = cit.write_file(self.TMP_FILE, content)
         content_read = cit.read_file(self.TMP_FILE)
         self.assertEqual(content_read, content)
 
-    def test_read_file_2(self):
+    def test_read_file_with_encoding(self):
         content = "3.1415926"
         len_write = cit.write_file(self.TMP_FILE, content)
         content_read, encoding = cit.read_file(self.TMP_FILE, with_encoding=True)
