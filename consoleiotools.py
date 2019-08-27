@@ -90,15 +90,17 @@ def get_input(question='', prompt='> '):
     return str(input(prompt)).strip()
 
 
-def get_choice(choices):
-    for index, item in enumerate(choices):
-        assemble_print = ""
-        assemble_print += Fore.YELLOW + " {}) ".format(str(index + 1)) + Fore.RESET
-        assemble_print += Fore.WHITE + str(item) + Fore.RESET
+def get_choice(choices, exitable: bool = False):
+    if exitable:
+        echo(" {Fore.YELLOW}0) ** EXIT **{Fore.RESET}".format(Fore=Fore))
+    for index, item in enumerate(choices, start=1):
+        assemble_print = " {Fore.YELLOW}{num}){Fore.RESET} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item)
         echo(assemble_print)
     user_choice = get_input().strip()
     if user_choice in choices:
         return user_choice
+    if user_choice == "0":
+        return None
     elif user_choice.isdigit():
         index = int(user_choice) - 1
         if index >= len(choices):
