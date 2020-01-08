@@ -5,8 +5,8 @@ import os
 import FakeIn
 import FakeOut
 
-sys.path.insert(0, os.path.dirname(sys.path[0]))
-import consoleiotools as cit
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this line.
 
 
 class test_consoleiotools(unittest.TestCase):
