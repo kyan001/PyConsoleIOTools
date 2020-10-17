@@ -5,18 +5,21 @@
 [![GitHub license](https://img.shields.io/github/license/kyan001/PyConsoleIOTools.svg)](https://github.com/kyan001/PyConsoleIOTools/blob/master/LICENSE)
 
 ## Installation
+
 ```sh
 pip install consoleiotools  # install
 pip install --upgrade consoleiotools  # update
 ```
 
 ## Get Started
+
 ```python
 import consoleiotools as cit
 print(cit.__version__)
 ```
 
 ## Prints on Screen
+
 ```python
 >>> cit.start()
 *
@@ -54,25 +57,34 @@ print(cit.__version__)
 ```
 
 ## Get User Input
+
 ```python
 >>> cit.get_input()
 > Hello World
 'Hello World'
 
->>> cit.get_choice(['Apple', 'Google'])
+>>> cit.get_choice(['Apple', 'Google'])  # Enter number to select.
 |  1) Apple
 |  2) Google
 > 2
 'Google'
 
->>> cit.get_choice(['Apple', 'Google'])
+>>> cit.get_choice(['Apple', 'Google'])  # Enter string is ok too.
 |  1) Apple
 |  2) Google
 > Google
 'Google'
+
+>>> cit.get_choice(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
+|  0) ** EXIT **
+|  1) Apple
+|  2) Google
+> 0
+None
 ```
 
 ## File IO
+
 ```python
 >>> cit.read_file('/path/to/file')
 'File contents'
@@ -88,6 +100,7 @@ print(cit.__version__)
 ```
 
 ## Controls
+
 ```python
 >>> cit.pause()
 Press Enter to Continue...

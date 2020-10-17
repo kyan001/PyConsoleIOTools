@@ -11,7 +11,7 @@ import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this 
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.3.0'
+    cit_version = '2.5.0'
     TMP_FILE = "tmp.txt"
 
     def setUp(self):

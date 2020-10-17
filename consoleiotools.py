@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.3.0'
+__version__ = '2.5.0'
 
 
 def as_session(name_or_func):  # decorator
