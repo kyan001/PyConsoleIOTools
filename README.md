@@ -45,6 +45,9 @@ print(cit.__version__)
 >>> cit.err('Hello World')
 | (Error) Hello World
 
+>>> cit.muted('Hello World')
+| Hello World  # gray
+
 >>> cit.end()
 `
 

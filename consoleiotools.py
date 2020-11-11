@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.5.0'
+__version__ = '2.6.2'
 
 
 def as_session(name_or_func):  # decorator
@@ -71,6 +71,10 @@ def warn(msg, **options):
 
 def err(msg, **options):
     return echo(Back.RED + Fore.WHITE + Style.BRIGHT + msg, "error", **options)
+
+
+def dim(msg, **options):
+    return echo(Style.DIM + Fore.WHITE + msg, **options)
 
 
 def pause(msg="Press Enter to Continue..."):

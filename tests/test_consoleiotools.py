@@ -11,7 +11,7 @@ import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this 
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.5.0'
+    cit_version = '2.6.2'
     TMP_FILE = "tmp.txt"
 
     def setUp(self):
@@ -72,6 +72,10 @@ class test_consoleiotools(unittest.TestCase):
     def test_err(self):
         cit.err("ABC")
         self.assertEqual(self.fakeout.readline(ansi=False), "| (Error) ABC\n")
+
+    def test_dim(self):
+        cit.dim("ABC")
+        self.assertEqual(self.fakeout.readline(ansi=False), "| ABC\n")
 
     def test_pause(self):
         self.fakein.write()  # simulate press enter

@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
 
+import consoleiotools
+
 setup(
     name='consoleiotools',
-    version='2.5.0',
+    version=consoleiotools.__version__,
     description='Some console tools for inputs and outputs',
     long_description='Some console tools for inputs and outputs, by Kyan',
     url='https://github.com/kyan001/PyConsoleIOTools',
