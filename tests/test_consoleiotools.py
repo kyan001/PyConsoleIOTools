@@ -92,17 +92,21 @@ class test_consoleiotools(unittest.TestCase):
         self.assertEqual(self.fakeout.readline(ansi=False), "> ")
         self.assertEqual(userinput, "ABC")
 
-    def test_get_choice_1(self):
+    def test_get_choice_index(self):
         self.fakein.write("1")
         self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
         expect_word = "|  1) ABC\n|  2) DEF\n> "
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
 
-    def test_get_choice_2(self):
+    def test_get_choice_string(self):
         self.fakein.write("ABC")
         self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
         expect_word = "|  1) ABC\n|  2) DEF\n> "
         self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+
+    def test_get_choice_exit_ok(self):
+        self.fakein.write("0")
+        self.assertEqual(cit.get_choice(["ABC", "DEF"], exitable=True), None)
 
     def test_as_session_1(self):
         @cit.as_session

@@ -96,24 +96,56 @@ def get_input(question='', prompt='> '):
 
 def get_choice(choices, exitable: bool = False):
     if exitable:
-        echo(" {Fore.YELLOW}0) ** EXIT **{Fore.RESET}".format(Fore=Fore))
+        exit_word = "0"
+        echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=exit_word))
     for index, item in enumerate(choices, start=1):
-        assemble_print = " {Fore.YELLOW}{num}){Fore.RESET} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item)
+        assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item)
         echo(assemble_print)
     user_choice = get_input().strip()
+    if exitable and user_choice == exit_word:
+        return None
     if user_choice in choices:
         return user_choice
-    if user_choice == "0":
-        return None
-    elif user_choice.isdigit():
+    if user_choice.isdigit():
         index = int(user_choice) - 1
-        if index >= len(choices):
-            err("Invalid Choice")
-            bye()
-        return choices[index]
-    else:
-        err("Please enter a valid choice")
-        return get_choice(choices)
+        if 0 <= index < len(choices):
+            return choices[index]
+    err("Please enter a valid choice")
+    return get_choice(choices)
+
+
+def get_choices(choices, style="[+]"):
+    def toggle_listitem(itm, lst: list):
+        if itm in lst:
+            lst.remove(itm)
+        else:
+            lst.append(itm)
+        return lst
+
+    done_word = "0"
+    user_choices = []
+    while True:
+        echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=done_word))
+        for index, item in enumerate(choices, start=1):
+            is_selected = item in user_choices
+            if style == "[+]":
+                markl = "[+] " if is_selected else "[ ] "
+                markr = ""
+            else:
+                markl = "[ " if is_selected else "  "
+                markr = " ]" if is_selected else "  "
+            assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {markl}{Fore.WHITE}{itm}{Fore.RESET}{markr}".format(Fore=Fore, num=index, itm=item, markl=markl, markr=markr)
+            echo(assemble_print)
+        user_choice = get_input().strip()
+        if user_choice == "0":
+            return user_choices
+        if user_choice in choices:
+            user_choices = toggle_listitem(user_choice, user_choices)
+        elif user_choice.isdigit() and 0 < int(user_choice) <= len(choices):
+            index = int(user_choice) - 1
+            user_choices = toggle_listitem(choices[index], user_choices)
+        else:
+            err("Please enter a valid choice")
 
 
 def read_file(path: str, with_encoding: bool = False, **kwargs):
