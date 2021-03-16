@@ -1,9 +1,10 @@
+from typing import List
 import unittest
 import sys
 import os
+from unittest.mock import patch
 
-import FakeIn
-import FakeOut
+from ansiesc import StringIO
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this line.
@@ -11,22 +12,13 @@ import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this 
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.6.2'
+    cit_version = '2.7.1'
     TMP_FILE = "tmp.txt"
 
     def setUp(self):
-        self.console_out = sys.stdout
-        self.fakeout = FakeOut.FakeOut()
-        sys.stdout = self.fakeout
-        self.console_in = sys.stdin
-        self.fakein = FakeIn.FakeIn()
-        sys.stdin = self.fakein
+        pass
 
     def tearDown(self):
-        self.fakeout.clean()
-        self.fakein.clean()
-        sys.stdout = self.console_out
-        sys.stdin = self.console_in
         if os.path.isfile(self.TMP_FILE):
             os.remove(self.TMP_FILE)
 
@@ -34,106 +26,139 @@ class test_consoleiotools(unittest.TestCase):
         self.assertEqual(self.cit_version, cit.__version__)
 
     def test_start(self):
-        cit.start()
-        self.assertEqual(self.fakeout.readline(ansi=False), '*\n')
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.start()
+            self.assertEqual(fake_out.getvalue(), '*\n')
 
     def test_end(self):
-        cit.end()
-        self.assertEqual(self.fakeout.readline(ansi=False), '`\n')
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.end()
+            self.assertEqual(fake_out.getvalue(), '`\n')
 
     def test_br(self):
-        cit.br(2)
-        self.assertEqual(self.fakeout.readline(ansi=False), '\n\n')
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.br(2)
+            self.assertEqual(fake_out.getvalue(), '\n\n')
 
     def test_echo(self):
-        cit.echo("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.echo("ABC")
+            self.assertEqual(fake_out.getvalue(), "| ABC\n")
 
     def test_echo_pre(self):
-        cit.echo("ABC", pre="prefix")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| (Prefix) ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.echo("ABC", pre="prefix")
+            self.assertEqual(fake_out.getvalue(), "| (Prefix) ABC\n")
 
     def test_title(self):
-        cit.title("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), '| __ABC__________________________\n')
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.title("ABC")
+            self.assertEqual(fake_out.getvalue(), '| __ABC__________________________\n')
 
     def test_ask(self):
-        cit.ask("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| (?) ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.ask("ABC")
+            self.assertEqual(fake_out.getvalue(), "| (?) ABC\n")
 
     def test_info(self):
-        cit.info("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| (Info) ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.info("ABC")
+            self.assertEqual(fake_out.getvalue(), "| (Info) ABC\n")
 
     def test_warn(self):
-        cit.warn("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| (Warning) ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.warn("ABC")
+            self.assertEqual(fake_out.getvalue(), "| (Warning) ABC\n")
 
     def test_err(self):
-        cit.err("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| (Error) ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.err("ABC")
+            self.assertEqual(fake_out.getvalue(), "| (Error) ABC\n")
 
     def test_dim(self):
-        cit.dim("ABC")
-        self.assertEqual(self.fakeout.readline(ansi=False), "| ABC\n")
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.dim("ABC")
+            self.assertEqual(fake_out.getvalue(), "| ABC\n")
 
     def test_pause(self):
-        self.fakein.write()  # simulate press enter
-        cit.pause()
-        expect_word = "\nPress Enter to Continue..."
-        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("\n")):  # simulate press enter
+            cit.pause()
+            expect_word = "\nPress Enter to Continue..."
+            self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_bye(self):
         self.assertRaises(SystemExit, cit.bye, None)
 
     def test_get_input(self):
-        self.fakein.write("ABC")
-        userinput = cit.get_input()
-        self.assertEqual(self.fakeout.readline(ansi=False), "> ")
-        self.assertEqual(userinput, "ABC")
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
+            userinput = cit.get_input()
+            self.assertEqual(fake_out.getvalue(), "> ")
+            self.assertEqual(userinput, "ABC")
 
     def test_get_choice_index(self):
-        self.fakein.write("1")
-        self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-        expect_word = "|  1) ABC\n|  2) DEF\n> "
-        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n")):
+            self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
+            expect_word = "|  1) ABC\n|  2) DEF\n> "
+            self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choice_string(self):
-        self.fakein.write("ABC")
-        self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-        expect_word = "|  1) ABC\n|  2) DEF\n> "
-        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
+            self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
+            expect_word = "|  1) ABC\n|  2) DEF\n> "
+            self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choice_exit_ok(self):
-        self.fakein.write("0")
-        self.assertEqual(cit.get_choice(["ABC", "DEF"], exitable=True), None)
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("0\n")):
+            self.assertEqual(cit.get_choice(["ABC", "DEF"], exitable=True), None)
+
+    def test_get_choice_done(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n0\n")):
+            self.assertEqual(cit.get_choices(["ABC", "DEF"]), ["ABC", ])
+            expect_word = "|  0) ** DONE **"
+            self.assertTrue(expect_word in fake_out.getvalue())
+
+    def test_get_choices_exit(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("0\n")):
+            self.assertEqual(cit.get_choices(["ABC", "DEF"]), [])
+            expect_word = "|  0) ** EXIT **\n|  1) [ ] ABC\n|  2) [ ] DEF\n> "
+            self.assertEqual(fake_out.getvalue(), expect_word)
+
+    def test_get_choices_all(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            with patch("sys.stdin", new=StringIO("a\n0\n")):  # allable off
+                self.assertEqual(cit.get_choices(["ABC", "DEF"]), [])
+            with patch("sys.stdin", new=StringIO("a\n0\n")):  # allable on
+                self.assertEqual(cit.get_choices(["ABC", "DEF"], allable=True), ["ABC", "DEF"])
 
     def test_as_session_1(self):
         @cit.as_session
         def func():
             print('ABC')
 
-        func()
-        expect_word = "*\n| __FUNC__________________________\nABC\n`\n"
-        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            func()
+            expect_word = "*\n| __FUNC__________________________\nABC\n`\n"
+            self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_as_session_2(self):
         @cit.as_session('DEF')
         def func():
             print('ABC')
 
-        func()
-        expect_word = "*\n| __DEF__________________________\nABC\n`\n"
-        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            func()
+            expect_word = "*\n| __DEF__________________________\nABC\n`\n"
+            self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_as_session_3(self):
         @cit.as_session
         def underscore_orCamel():
             print('ABC')
 
-        underscore_orCamel()
-        expect_word = "*\n| __UNDERSCORE OR CAMEL__________________________\nABC\n`\n"
-        self.assertEqual(self.fakeout.readline(ansi=False), expect_word)
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            underscore_orCamel()
+            expect_word = "*\n| __UNDERSCORE OR CAMEL__________________________\nABC\n`\n"
+            self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_write_file(self):
         content = "3.1415926"
