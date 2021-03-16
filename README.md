@@ -84,6 +84,34 @@ print(cit.__version__)
 |  2) Google
 > 0
 None
+
+>>> cit.get_choices(['Apple', 'Google'])  # Multiple Selection
+|  0) ** EXIT **
+|  1) [ ] Apple
+|  2) [ ] Google
+> 1  # Enter number to check or uncheck selections
+|  0) ** DONE **
+|  1) [+] Apple
+|  2) [ ] Google
+> Google  # Enter string is ok too.
+|  0) ** DONE **
+|  1) [+] Apple
+|  2) [+] Google
+> 0  # Enter 0 when done.
+['Apple', 'Google']  # return [] is no selections.
+
+>>> cit.get_choices(['Apple', 'Google'], allable=True)  # Add a choice of select all in menu.
+|  0) ** EXIT **
+|  1) [ ] Apple
+|  2) [ ] Google
+|  a) ** ALL **
+> a  # Enter `a` to check all. If `a` is in choices, enter `all`.
+|  0) ** DONE **
+|  1) [+] Apple
+|  2) [+] Google
+|  a) ** ALL **
+> 0
+['Apple', 'Google']
 ```
 
 ## File IO

@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.7.0'
+__version__ = '2.7.1'
 
 
 def as_session(name_or_func):  # decorator
@@ -114,7 +114,7 @@ def get_choice(choices, exitable: bool = False):
     return get_choice(choices)
 
 
-def get_choices(choices, style="[+]"):
+def get_choices(choices, style="[+]", allable=False):
     def toggle_listitem(itm, lst: list):
         if itm in lst:
             lst.remove(itm)
@@ -122,10 +122,11 @@ def get_choices(choices, style="[+]"):
             lst.append(itm)
         return lst
 
-    done_word = "0"
+    DONE_WORD = "0"
+    ALL_WORD = "all" if "a" in choices else "a"
     user_choices = []
     while True:
-        echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=done_word))
+        echo("{Fore.YELLOW}{word:>2}) ** {done_or_exit} **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD, done_or_exit="DONE" if user_choices else "EXIT"))
         for index, item in enumerate(choices, start=1):
             is_selected = item in user_choices
             if style == "[+]":
@@ -136,10 +137,14 @@ def get_choices(choices, style="[+]"):
                 markr = " ]" if is_selected else "  "
             assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {markl}{Fore.WHITE}{itm}{Fore.RESET}{markr}".format(Fore=Fore, num=index, itm=item, markl=markl, markr=markr)
             echo(assemble_print)
+        if allable:
+            echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
         user_choice = get_input().strip()
-        if user_choice == "0":
+        if user_choice == DONE_WORD:
             return user_choices
-        if user_choice in choices:
+        if allable and user_choice == ALL_WORD:
+            user_choices = choices
+        elif user_choice in choices:
             user_choices = toggle_listitem(user_choice, user_choices)
         elif user_choice.isdigit() and 0 < int(user_choice) <= len(choices):
             index = int(user_choice) - 1
