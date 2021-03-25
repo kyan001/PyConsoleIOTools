@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 colorama.init()
 
 
-__version__ = '2.7.1'
+__version__ = '2.8.0'
 
 
 def as_session(name_or_func):  # decorator
@@ -120,7 +120,7 @@ def get_choice(choices, exitable: bool = False):
     return get_choice(choices)
 
 
-def get_choices(choices, style="[+]", allable=False):
+def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     def toggle_listitem(itm, lst: list):
         if itm in lst:
             lst.remove(itm)
@@ -134,14 +134,8 @@ def get_choices(choices, style="[+]", allable=False):
     while True:
         echo("{Fore.YELLOW}{word:>2}) ** {done_or_exit} **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD, done_or_exit="DONE" if user_choices else "EXIT"))
         for index, item in enumerate(choices, start=1):
-            is_selected = item in user_choices
-            if style == "[+]":
-                markl = "[+] " if is_selected else "[ ] "
-                markr = ""
-            else:
-                markl = "[ " if is_selected else "  "
-                markr = " ]" if is_selected else "  "
-            assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {markl}{Fore.WHITE}{itm}{Fore.RESET}{markr}".format(Fore=Fore, num=index, itm=item, markl=markl, markr=markr)
+            mark = "[+]" if item in user_choices else "[ ]"  # item is selected or not
+            assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {mark} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item, mark=mark)
             echo(assemble_print)
         if allable:
             echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
