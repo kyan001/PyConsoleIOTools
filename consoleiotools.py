@@ -132,7 +132,10 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     ALL_WORD = "all" if "a" in choices else "a"
     user_choices = []
     while True:
-        echo("{Fore.YELLOW}{word:>2}) ** {done_or_exit} **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD, done_or_exit="DONE" if user_choices else "EXIT"))
+        if user_choices:  # user selections > 0
+            echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
+        elif exitable:  # no user selection, but exitable is on.
+            echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
         for index, item in enumerate(choices, start=1):
             mark = "[+]" if item in user_choices else "[ ]"  # item is selected or not
             assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {mark} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item, mark=mark)
@@ -141,7 +144,8 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
         user_choice = get_input().strip()
         if user_choice == DONE_WORD:
-            return user_choices
+            if exitable or len(user_choices) > 0:
+                return user_choices
         if allable and user_choice == ALL_WORD:
             user_choices = choices
         elif user_choice in choices:
