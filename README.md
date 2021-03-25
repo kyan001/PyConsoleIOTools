@@ -112,10 +112,11 @@ None
 ['Apple', 'Google']
 
 >>> cit.get_choices(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
+|  0) ** EXIT **
 |  1) [ ] Apple
 |  2) [ ] Google
 > 0
-[]
+[]  # Empty list returned.
 ```
 
 ## File IO
