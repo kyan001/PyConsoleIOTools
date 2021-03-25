@@ -147,7 +147,10 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             if exitable or len(user_choices) > 0:
                 return user_choices
         if allable and user_choice == ALL_WORD:
-            user_choices = choices
+            if len(user_choices) == len(choices):
+                user_choices = []
+            else:
+                user_choices = choices.copy()
         elif user_choice in choices:
             user_choices = toggle_listitem(user_choice, user_choices)
         elif user_choice.isdigit() and 0 < int(user_choice) <= len(choices):
