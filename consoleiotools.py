@@ -95,6 +95,12 @@ def get_input(question='', prompt='> '):
 
 
 def get_choice(choices, exitable: bool = False):
+    """Get user choice from a given list
+
+    Args:
+        choices: list. The list that user can choose from.
+        exitable: bool. Does `exit` is an option for user to select.
+    """
     if exitable:
         exit_word = "0"
         echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=exit_word))
@@ -110,7 +116,7 @@ def get_choice(choices, exitable: bool = False):
         index = int(user_choice) - 1
         if 0 <= index < len(choices):
             return choices[index]
-    err("Please enter a valid choice")
+    err("Please enter a valid choice.")
     return get_choice(choices)
 
 
@@ -150,7 +156,7 @@ def get_choices(choices, style="[+]", allable=False):
             index = int(user_choice) - 1
             user_choices = toggle_listitem(choices[index], user_choices)
         else:
-            err("Please enter a valid choice")
+            err("Please enter a valid choice.")
 
 
 def read_file(path: str, with_encoding: bool = False, **kwargs):
