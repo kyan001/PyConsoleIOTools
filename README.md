@@ -86,7 +86,6 @@ print(cit.__version__)
 None
 
 >>> cit.get_choices(['Apple', 'Google'])  # Multiple Selection
-|  0) ** EXIT **
 |  1) [ ] Apple
 |  2) [ ] Google
 > 1  # Enter number to check or uncheck selections
@@ -101,7 +100,6 @@ None
 ['Apple', 'Google']  # return [] is no selections.
 
 >>> cit.get_choices(['Apple', 'Google'], allable=True)  # Add a choice of select all in menu.
-|  0) ** EXIT **
 |  1) [ ] Apple
 |  2) [ ] Google
 |  a) ** ALL **
@@ -112,6 +110,12 @@ None
 |  a) ** ALL **
 > 0
 ['Apple', 'Google']
+
+>>> cit.get_choices(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
+|  1) [ ] Apple
+|  2) [ ] Google
+> 0
+[]
 ```
 
 ## File IO

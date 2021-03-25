@@ -12,7 +12,7 @@ import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this 
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.7.1'
+    cit_version = '2.8.0'
     TMP_FILE = "tmp.txt"
 
     def setUp(self):
@@ -107,28 +107,35 @@ class test_consoleiotools(unittest.TestCase):
             expect_word = "|  1) ABC\n|  2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
-    def test_get_choice_exit_ok(self):
-        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("0\n")):
-            self.assertEqual(cit.get_choice(["ABC", "DEF"], exitable=True), None)
-
-    def test_get_choice_done(self):
+    def test_get_choices_done(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n0\n")):
             self.assertEqual(cit.get_choices(["ABC", "DEF"]), ["ABC", ])
             expect_word = "|  0) ** DONE **"
             self.assertTrue(expect_word in fake_out.getvalue())
 
-    def test_get_choices_exit(self):
+    def test_get_choices_exitable(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("0\n")):
-            self.assertEqual(cit.get_choices(["ABC", "DEF"]), [])
+            self.assertEqual(cit.get_choices(["ABC", "DEF"], exitable=True), [])
             expect_word = "|  0) ** EXIT **\n|  1) [ ] ABC\n|  2) [ ] DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
-    def test_get_choices_all(self):
-        with patch("sys.stdout", new=StringIO()) as fake_out:
-            with patch("sys.stdin", new=StringIO("a\n0\n")):  # allable off
-                self.assertEqual(cit.get_choices(["ABC", "DEF"]), [])
-            with patch("sys.stdin", new=StringIO("a\n0\n")):  # allable on
-                self.assertEqual(cit.get_choices(["ABC", "DEF"], allable=True), ["ABC", "DEF"])
+    def test_get_choices_all_off(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("a\n0\n")):  # allable off
+            self.assertEqual(cit.get_choices(["ABC", "DEF"], exitable=True), [])
+            expect_word = "Please enter a valid choice."
+            self.assertTrue(expect_word in fake_out.getvalue())
+
+    def test_get_choices_all_select(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("a\n0\n")):  # allable on
+            self.assertEqual(cit.get_choices(["ABC", "DEF"], allable=True), ["ABC", "DEF"])
+            expect_word = "a) ** ALL **"
+            self.assertTrue(expect_word in fake_out.getvalue())
+
+    def test_get_choices_all_unselect(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("a\na\n0\n")):  # allable on, unselect all.
+            self.assertEqual(cit.get_choices(["ABC", "DEF"], allable=True, exitable=True), [])
+            expect_word = "[+] ABC"
+            self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_as_session_1(self):
         @cit.as_session
