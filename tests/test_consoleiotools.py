@@ -12,7 +12,6 @@ import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this 
 
 class test_consoleiotools(unittest.TestCase):
     """For testing consoleiotools"""
-    cit_version = '2.8.0'
     TMP_FILE = "tmp.txt"
 
     def setUp(self):
@@ -21,9 +20,6 @@ class test_consoleiotools(unittest.TestCase):
     def tearDown(self):
         if os.path.isfile(self.TMP_FILE):
             os.remove(self.TMP_FILE)
-
-    def test_version(self):
-        self.assertEqual(self.cit_version, cit.__version__)
 
     def test_start(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:

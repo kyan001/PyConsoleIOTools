@@ -3,8 +3,8 @@ import colorama
 from colorama import Fore, Back, Style
 colorama.init()
 
-
-__version__ = '2.8.0'
+with open("VERSION") as f:
+    __version__ = f.read().strip()
 
 
 def as_session(name_or_func):  # decorator

@@ -1,10 +1,12 @@
 from setuptools import setup, find_packages
 
 import consoleiotools
+with open("VERSION") as f:
+    version = f.read().strip()
 
 setup(
     name='consoleiotools',
-    version=consoleiotools.__version__,
+    version=version,
     description='Some console tools for inputs and outputs',
     long_description='Some console tools for inputs and outputs, by Kyan',
     url='https://github.com/kyan001/PyConsoleIOTools',
