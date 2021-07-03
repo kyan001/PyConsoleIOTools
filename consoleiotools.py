@@ -1,10 +1,11 @@
 from functools import wraps
+import os
+
 import colorama
 from colorama import Fore, Back, Style
 colorama.init()
 
-with open("VERSION") as f:
-    __version__ = f.read().strip()
+__version__ = "2.8.3"
 
 
 def as_session(name_or_func):  # decorator

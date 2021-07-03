@@ -2,12 +2,9 @@ import setuptools
 
 with open("README.md") as f:
     long_desc = f.read()
-with open("VERSION") as f:
-    version = f.read().strip()
 
 setuptools.setup(
     name='consoleiotools',
-    version=version,
     description='Some console tools for inputs and outputs',
     long_description=long_desc,
     long_description_content_type="text/markdown",

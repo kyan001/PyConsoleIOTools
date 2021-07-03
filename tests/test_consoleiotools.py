@@ -21,6 +21,9 @@ class test_consoleiotools(unittest.TestCase):
         if os.path.isfile(self.TMP_FILE):
             os.remove(self.TMP_FILE)
 
+    def test_version(self):
+        self.assertTrue(isinstance(cit.__version__, str))
+
     def test_start(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.start()
