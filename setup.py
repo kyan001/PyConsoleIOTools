@@ -1,13 +1,13 @@
 import setuptools
 
-with open("README.md") as f:
+with open('README.md') as f:
     long_desc = f.read()
 
 setuptools.setup(
     name='consoleiotools',
     description='Some console tools for inputs and outputs',
     long_description=long_desc,
-    long_description_content_type="text/markdown",
+    long_description_content_type='text/markdown',
     url='https://github.com/kyan001/PyConsoleIOTools',
     author='Kai Yan',
     author_email='kai@kyan001.com',
@@ -20,7 +20,7 @@ setuptools.setup(
     ],
     keywords='console input output tool',
     packages=setuptools.find_packages(exclude=['contrib', 'docs', 'tests']),
-    py_modules=["consoleiotools"],
+    py_modules=['consoleiotools'],
     install_requires=['colorama'],
     extras_require={},
     package_data={},
