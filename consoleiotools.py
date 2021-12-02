@@ -5,7 +5,7 @@ import colorama
 from colorama import Fore, Back, Style
 colorama.init()
 
-__version__ = "2.8.3"
+__version__ = "2.8.5"
 
 
 def as_session(name_or_func):  # decorator
@@ -102,14 +102,14 @@ def get_choice(choices, exitable: bool = False):
         choices: list. The list that user can choose from.
         exitable: bool. Does `exit` is an option for user to select.
     """
-    if exitable:
-        exit_word = "0"
-        echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=exit_word))
+    EXIT_WORD = "exit" if "0" in choices else "0"
     for index, item in enumerate(choices, start=1):
         assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item)
         echo(assemble_print)
+    if exitable:
+        echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=EXIT_WORD))
     user_choice = get_input().strip()
-    if exitable and user_choice == exit_word:
+    if exitable and user_choice == EXIT_WORD:
         return None
     if user_choice in choices:
         return user_choice
@@ -129,23 +129,24 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             lst.append(itm)
         return lst
 
-    DONE_WORD = "0"
+    EXIT_WORD = "exit" if "0" in choices else "0"
+    DONE_WORD = "done" if "0" in choices else "0"
     ALL_WORD = "all" if "a" in choices else "a"
     user_choices = []
     while True:
-        if user_choices:  # user selections > 0
-            echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
-        elif exitable:  # no user selection, but exitable is on.
-            echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
+        if allable:
+            echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
         for index, item in enumerate(choices, start=1):
             mark = "[+]" if item in user_choices else "[ ]"  # item is selected or not
             assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {mark} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item, mark=mark)
             echo(assemble_print)
-        if allable:
-            echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
+        if user_choices:  # user selections > 0
+            echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
+        elif exitable:  # no user selection, but exitable is on.
+            echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=EXIT_WORD))
         user_choice = get_input().strip()
-        if user_choice == DONE_WORD:
-            if exitable or len(user_choices) > 0:
+        if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
+            if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
                 return user_choices
         if allable and user_choice == ALL_WORD:
             if len(user_choices) == len(choices):
