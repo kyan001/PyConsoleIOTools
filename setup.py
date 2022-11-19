@@ -21,7 +21,7 @@ setuptools.setup(
     keywords='console input output tool',
     packages=setuptools.find_packages(exclude=['contrib', 'docs', 'tests']),
     py_modules=['consoleiotools'],
-    install_requires=['colorama'],
+    install_requires=['rich'],
     extras_require={},
     package_data={},
     data_files=[],

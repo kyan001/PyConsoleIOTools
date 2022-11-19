@@ -1,11 +1,24 @@
 from functools import wraps
-import os
 
-import colorama
-from colorama import Fore, Back, Style
-colorama.init()
+import rich.console
+import rich.theme
+import rich.panel
+import rich.live
+import rich.text
+import rich.progress
 
-__version__ = "2.8.5"
+__version__ = "3.0.8"
+theme = rich.theme.Theme({
+    "echo": "on black",
+    "info": "",
+    "warn": "red",
+    "err": "bright_white on red",
+    "ask": "yellow",
+    "title": "bright_cyan",
+    "pre": "dim white",
+    "pause": "yellow",
+})
+console = rich.console.Console(theme=theme)
 
 
 def as_session(name_or_func):  # decorator
@@ -26,21 +39,21 @@ def as_session(name_or_func):  # decorator
     def get_func(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            start()
-            title(name)
-            result = func(*args, **kwargs)
-            end()
+            panel = rich.panel.Panel("123", title=name)
+            with rich.live.Live(console=console) as live:
+                result = func(*args, **kwargs)
+                panel.subtitle = result
             return result
         return wrapper
     return get_func
 
 
 def start():
-    print('*')
+    console.print('*')
 
 
 def end():
-    print('`')
+    console.print('`')
 
 
 def br(count=1):
@@ -48,48 +61,51 @@ def br(count=1):
     print('\n' * (count - 1))
 
 
-def echo(msg, pre=""):
-    prefix = Style.DIM + Fore.WHITE + '({}) '.format(pre.capitalize()) + Fore.RESET + Style.RESET_ALL if pre else ''
-    print("| " + Back.BLACK + "{pf}{msg}".format(pf=prefix, msg=msg) + Back.RESET + Fore.RESET + Style.RESET_ALL)
+def echo(*arg, pre: str = "", style: str = "echo", **options):
+    txt = rich.text.Text(style=style)
+    if pre:
+        txt.append(f"({pre.capitalize()}) ", style="pre")
+    txt.append(" ".join(arg))
+    console.print(txt, **options)
 
 
-def title(msg, **options):
+def title(*arg, **options):
     """print something like a title"""
-    return echo(Style.BRIGHT + Fore.CYAN + "__{}__________________________".format(msg.upper().strip()) + Style.RESET_ALL + Fore.RESET, **options)
+    return console.rule((" ".join(arg)).upper().strip())
 
 
-def ask(msg, **options):
-    return echo(Fore.YELLOW + msg, "?", **options)
+def ask(*arg, **options):
+    return echo(*arg, pre="?", style="ask", **options)
 
 
-def info(msg, **options):
-    return echo(msg, "info", **options)
+def info(*arg, **options):
+    return echo(*arg, pre="info", style="info", **options)
 
 
-def warn(msg, **options):
-    return echo(Fore.RED + msg, "warning", **options)
+def warn(*arg, **options):
+    return echo(*arg, pre="warning", style="warn", **options)
 
 
-def err(msg, **options):
-    return echo(Back.RED + Fore.WHITE + Style.BRIGHT + msg, "error", **options)
+def err(*arg, **options):
+    return echo(*arg, pre="error", style="err", **options)
 
 
-def dim(msg, **options):
-    return echo(Style.DIM + Fore.WHITE + msg, **options)
+def dim(*arg, **options):
+    return echo(*arg, style="dim white", **options)
 
 
-def pause(msg="Press Enter to Continue..."):
+def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
-    print('\n' + Fore.YELLOW + msg + Fore.RESET, end='')
-    input()
+    echo(f"\n{msg}", style="pause", end="")
+    return input()
 
 
-def bye(msg=''):
+def bye(msg=""):
     """print msg and exit"""
     exit(msg)
 
 
-def get_input(question='', prompt='> '):
+def get_input(question="", prompt="> "):
     if question:
         ask(question)
     return str(input(prompt)).strip()
@@ -104,10 +120,9 @@ def get_choice(choices, exitable: bool = False):
     """
     EXIT_WORD = "exit" if "0" in choices else "0"
     for index, item in enumerate(choices, start=1):
-        assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item)
-        echo(assemble_print)
+        echo(f"[yellow]{index:>2})[/] [white]{item}[/]")
     if exitable:
-        echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=EXIT_WORD))
+        echo(f"[yellow]{EXIT_WORD:>2}) ** [b]EXIT[/] **")
     user_choice = get_input().strip()
     if exitable and user_choice == EXIT_WORD:
         return None
@@ -135,15 +150,14 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     user_choices = []
     while True:
         if allable:
-            echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
+            echo(f"[yellow]{ALL_WORD:>2}) ** [b]ALL[/] **")
         for index, item in enumerate(choices, start=1):
-            mark = "[+]" if item in user_choices else "[ ]"  # item is selected or not
-            assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {mark} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item, mark=mark)
-            echo(assemble_print)
+            mark = r"\[[green]+[/]]" if item in user_choices else rich.markup.escape("[ ]")  # item is selected or not
+            echo(f"[yellow]{index:>2})[/] {mark} [white]{item}")
         if user_choices:  # user selections > 0
-            echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
+            echo(f"[yellow]{DONE_WORD:>2}) ** [b]DONE[/] **")
         elif exitable:  # no user selection, but exitable is on.
-            echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=EXIT_WORD))
+            echo(f"[yellow]{EXIT_WORD:>2}) ** [b]EXIT[/] **")
         user_choice = get_input().strip()
         if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
             if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
@@ -160,6 +174,10 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             user_choices = toggle_listitem(choices[index], user_choices)
         else:
             err("Please enter a valid choice.")
+
+
+def track(iterable, desc="", *arg, **options):
+    return rich.progress.track(iterable, description=desc)
 
 
 def read_file(path: str, with_encoding: bool = False, **kwargs):
