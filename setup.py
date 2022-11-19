@@ -22,7 +22,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=['contrib', 'docs', 'tests']),
     py_modules=['consoleiotools'],
     install_requires=['rich'],
-    extras_require={},
+    extras_require={'dev': ['build', 'wheel', 'pycodestyle']},
     package_data={},
     data_files=[],
     entry_points={},
