@@ -7,7 +7,7 @@ import rich.live
 import rich.text
 import rich.progress
 
-__version__ = "3.0.8"
+__version__ = "3.0.9"
 theme = rich.theme.Theme({
     "echo": "on black",
     "info": "",
@@ -39,21 +39,21 @@ def as_session(name_or_func):  # decorator
     def get_func(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            panel = rich.panel.Panel("123", title=name)
-            with rich.live.Live(console=console) as live:
-                result = func(*args, **kwargs)
-                panel.subtitle = result
+            start()
+            title(f"{name}()")
+            result = func(*args, **kwargs)
+            end()
             return result
         return wrapper
     return get_func
 
 
 def start():
-    console.print('*')
+    br()
 
 
 def end():
-    console.print('`')
+    console.rule("╰", align="left", style="dim")
 
 
 def br(count=1):
@@ -61,17 +61,19 @@ def br(count=1):
     print('\n' * (count - 1))
 
 
-def echo(*arg, pre: str = "", style: str = "echo", **options):
+def echo(*arg, pre: str = "", bar: str = "│", style: str = "echo", **options):
     txt = rich.text.Text(style=style)
+    if bar:
+        txt.append(f"{bar} ")
     if pre:
         txt.append(f"({pre.capitalize()}) ", style="pre")
-    txt.append(" ".join(arg))
+    txt.append(rich.text.Text.from_markup((" ".join(arg))))
     console.print(txt, **options)
 
 
 def title(*arg, **options):
     """print something like a title"""
-    return console.rule((" ".join(arg)).upper().strip())
+    return console.print(rich.panel.Panel((" ".join(arg)).upper().strip(), highlight=True, expand=False))
 
 
 def ask(*arg, **options):
@@ -96,7 +98,8 @@ def dim(*arg, **options):
 
 def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
-    echo(f"\n{msg}", style="pause", end="")
+    br()
+    echo(f"{rich.markup.escape(msg)}", style="pause", end="")
     return input()
 
 
@@ -119,10 +122,11 @@ def get_choice(choices, exitable: bool = False):
         exitable: bool. Does `exit` is an option for user to select.
     """
     EXIT_WORD = "exit" if "0" in choices else "0"
+    fill = max(len(EXIT_WORD), 2)
     for index, item in enumerate(choices, start=1):
-        echo(f"[yellow]{index:>2})[/] [white]{item}[/]")
+        echo(f"[yellow]{index:>{fill}})[/] [white]{item}[/]")
     if exitable:
-        echo(f"[yellow]{EXIT_WORD:>2}) ** [b]EXIT[/] **")
+        echo(f"[yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
     user_choice = get_input().strip()
     if exitable and user_choice == EXIT_WORD:
         return None
@@ -147,17 +151,18 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     EXIT_WORD = "exit" if "0" in choices else "0"
     DONE_WORD = "done" if "0" in choices else "0"
     ALL_WORD = "all" if "a" in choices else "a"
+    fill = max(len(EXIT_WORD), len(DONE_WORD), len(ALL_WORD), 2)
     user_choices = []
     while True:
         if allable:
-            echo(f"[yellow]{ALL_WORD:>2}) ** [b]ALL[/] **")
+            echo(f"[yellow]{ALL_WORD:>{fill}}) ** [b]ALL[/] **")
         for index, item in enumerate(choices, start=1):
             mark = r"\[[green]+[/]]" if item in user_choices else rich.markup.escape("[ ]")  # item is selected or not
-            echo(f"[yellow]{index:>2})[/] {mark} [white]{item}")
+            echo(f"[yellow]{index:>{fill}})[/] {mark} [white]{item}")
         if user_choices:  # user selections > 0
-            echo(f"[yellow]{DONE_WORD:>2}) ** [b]DONE[/] **")
+            echo(f"[yellow]{DONE_WORD:>{fill}}) ** [b]DONE[/] **")
         elif exitable:  # no user selection, but exitable is on.
-            echo(f"[yellow]{EXIT_WORD:>2}) ** [b]EXIT[/] **")
+            echo(f"[yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
         user_choice = get_input().strip()
         if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
             if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
@@ -176,8 +181,14 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             err("Please enter a valid choice.")
 
 
-def track(iterable, desc="", *arg, **options):
-    return rich.progress.track(iterable, description=desc)
+def track(iterable, desc="", unit="", *arg, **options):
+    with rich.progress.Progress("│", rich.progress.SpinnerColumn(), *rich.progress.Progress.get_default_columns(),
+                                "·", rich.progress.MofNCompleteColumn(), unit) as progress:
+        task = progress.add_task(desc, total=None if not iterable or not len(iterable) else len(iterable))
+        while not progress.finished:
+            for item in iterable:
+                yield item
+                progress.update(task, advance=1)
 
 
 def read_file(path: str, with_encoding: bool = False, **kwargs):
