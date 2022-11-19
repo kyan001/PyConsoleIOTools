@@ -27,12 +27,12 @@ class test_consoleiotools(unittest.TestCase):
     def test_start(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.start()
-            self.assertEqual(fake_out.getvalue(), '*\n')
+            self.assertEqual(fake_out.getvalue(), '\n')
 
     def test_end(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.end()
-            self.assertEqual(fake_out.getvalue(), '`\n')
+            self.assertTrue('\n' in fake_out.getvalue())
 
     def test_br(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -42,47 +42,51 @@ class test_consoleiotools(unittest.TestCase):
     def test_echo(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.echo("ABC")
-            self.assertEqual(fake_out.getvalue(), "| ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ ABC\n")
 
     def test_echo_pre(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.echo("ABC", pre="prefix")
-            self.assertEqual(fake_out.getvalue(), "| (Prefix) ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ (Prefix) ABC\n")
 
     def test_title(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.title("ABC")
-            self.assertEqual(fake_out.getvalue(), '| __ABC__________________________\n')
+            self.assertEqual(fake_out.getvalue().strip(), """
+╭─────╮
+│ ABC │
+╰─────╯
+            """.strip())
 
     def test_ask(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.ask("ABC")
-            self.assertEqual(fake_out.getvalue(), "| (?) ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ (?) ABC\n")
 
     def test_info(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.info("ABC")
-            self.assertEqual(fake_out.getvalue(), "| (Info) ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ (Info) ABC\n")
 
     def test_warn(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.warn("ABC")
-            self.assertEqual(fake_out.getvalue(), "| (Warning) ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ (Warning) ABC\n")
 
     def test_err(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.err("ABC")
-            self.assertEqual(fake_out.getvalue(), "| (Error) ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ (Error) ABC\n")
 
     def test_dim(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.dim("ABC")
-            self.assertEqual(fake_out.getvalue(), "| ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ ABC\n")
 
     def test_pause(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("\n")):  # simulate press enter
             cit.pause()
-            expect_word = "\nPress Enter to Continue..."
+            expect_word = "\nPress [Enter] to Continue..."
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_bye(self):
@@ -97,13 +101,13 @@ class test_consoleiotools(unittest.TestCase):
     def test_get_choice_index(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-            expect_word = "|  1) ABC\n|  2) DEF\n> "
+            expect_word = "│  1) ABC\n│  2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choice_string(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-            expect_word = "|  1) ABC\n|  2) DEF\n> "
+            expect_word = "│  1) ABC\n│  2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choices_done(self):
@@ -161,8 +165,14 @@ class test_consoleiotools(unittest.TestCase):
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
-            expect_word = "*\n| __FUNC__________________________\nABC\n`\n"
-            self.assertEqual(fake_out.getvalue(), expect_word)
+            expect_word = """
+╭────────╮
+│ FUNC() │
+╰────────╯
+ABC
+╰
+            """
+            self.assertEqual(fake_out.getvalue().strip().strip("─").strip(), expect_word.strip())
 
     def test_as_session_2(self):
         @cit.as_session('DEF')
@@ -171,8 +181,14 @@ class test_consoleiotools(unittest.TestCase):
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
-            expect_word = "*\n| __DEF__________________________\nABC\n`\n"
-            self.assertEqual(fake_out.getvalue(), expect_word)
+            expect_word = """
+╭───────╮
+│ DEF() │
+╰───────╯
+ABC
+╰
+            """
+            self.assertEqual(fake_out.getvalue().strip().strip("─").strip(), expect_word.strip())
 
     def test_as_session_3(self):
         @cit.as_session
@@ -181,8 +197,14 @@ class test_consoleiotools(unittest.TestCase):
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             underscore_orCamel()
-            expect_word = "*\n| __UNDERSCORE OR CAMEL__________________________\nABC\n`\n"
-            self.assertEqual(fake_out.getvalue(), expect_word)
+            expect_word = """
+╭───────────────────────╮
+│ UNDERSCORE OR CAMEL() │
+╰───────────────────────╯
+ABC
+╰
+            """
+            self.assertEqual(fake_out.getvalue().strip().strip("─").strip(), expect_word.strip())
 
     def test_write_file(self):
         content = "3.1415926"

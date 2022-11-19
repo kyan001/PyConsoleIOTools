@@ -22,10 +22,12 @@ print(cit.__version__)
 
 ```python
 >>> cit.start()
-*
+# blank line
 
 >>> cit.title('Session Name')
-| __SESSION NAME__________________________
++--------------+
+| SESSION NAME |
++--------------+
 
 >>> cit.echo('Hello World')
 | Hello World
@@ -49,7 +51,7 @@ print(cit.__version__)
 | Hello World  # gray
 
 >>> cit.end()
-`
++ ------------------------
 
 >>> cit.br()
 # blank line
@@ -79,9 +81,9 @@ print(cit.__version__)
 'Google'
 
 >>> cit.get_choice(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
-|  0) ** EXIT **
 |  1) Apple
 |  2) Google
+|  0) ** EXIT **
 > 0
 None
 
@@ -89,32 +91,32 @@ None
 |  1) [ ] Apple
 |  2) [ ] Google
 > 1  # Enter number to check or uncheck selections
-|  0) ** DONE **
 |  1) [+] Apple
 |  2) [ ] Google
-> Google  # Enter string is ok too.
 |  0) ** DONE **
+> Google  # Enter string is ok too.
 |  1) [+] Apple
 |  2) [+] Google
+|  0) ** DONE **
 > 0  # Enter 0 when done.
 ['Apple', 'Google']  # return [] is no selections.
 
 >>> cit.get_choices(['Apple', 'Google'], allable=True)  # Add a choice of select all in menu.
+|  a) ** ALL **
 |  1) [ ] Apple
 |  2) [ ] Google
-|  a) ** ALL **
 > a  # Enter `a` to check all. If `a` is in choices, enter `all`.
-|  0) ** DONE **
+|  a) ** ALL **
 |  1) [+] Apple
 |  2) [+] Google
-|  a) ** ALL **
+|  0) ** DONE **
 > 0
 ['Apple', 'Google']
 
 >>> cit.get_choices(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
-|  0) ** EXIT **
 |  1) [ ] Apple
 |  2) [ ] Google
+|  0) ** EXIT **
 > 0
 []  # Empty list returned.
 ```
@@ -139,7 +141,7 @@ None
 
 ```python
 >>> cit.pause()
-Press Enter to Continue...
+| Press [Enter] to Continue...
 
 >>> cit.bye()
 # exit
@@ -160,17 +162,19 @@ def my_func():
     cit.echo('World')
 
 >>> my_func()
-*
-| __HELLO__________________________
++---------+
+| HELLO() |
++---------+
 | World
-`
++ ---------
 
 @cit.as_session
 def underscore_orCamel():
     pass
 
 >>> underscore_orCamel()
-*
-| __UNDERSCORE OR CAMEL__________________________
-`
++-----------------------+
+| UNDERSCORE OR CAMEL() |
++-----------------------+
++ -----------------------
 ```

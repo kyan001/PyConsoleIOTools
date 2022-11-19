@@ -1,11 +1,24 @@
 from functools import wraps
-import os
 
-import colorama
-from colorama import Fore, Back, Style
-colorama.init()
+import rich.console
+import rich.theme
+import rich.panel
+import rich.live
+import rich.text
+import rich.progress
 
-__version__ = "2.8.5"
+__version__ = "3.0.10"
+theme = rich.theme.Theme({
+    "echo": "on black",
+    "info": "",
+    "warn": "red",
+    "err": "bright_white on red",
+    "ask": "yellow",
+    "title": "bright_cyan",
+    "pre": "dim",
+    "pause": "yellow",
+})
+console = rich.console.Console(theme=theme)
 
 
 def as_session(name_or_func):  # decorator
@@ -27,7 +40,7 @@ def as_session(name_or_func):  # decorator
         @wraps(func)
         def wrapper(*args, **kwargs):
             start()
-            title(name)
+            title(f"{name}()")
             result = func(*args, **kwargs)
             end()
             return result
@@ -36,11 +49,11 @@ def as_session(name_or_func):  # decorator
 
 
 def start():
-    print('*')
+    br()
 
 
 def end():
-    print('`')
+    console.rule("╰", align="left", style="dim")
 
 
 def br(count=1):
@@ -48,48 +61,54 @@ def br(count=1):
     print('\n' * (count - 1))
 
 
-def echo(msg, pre=""):
-    prefix = Style.DIM + Fore.WHITE + '({}) '.format(pre.capitalize()) + Fore.RESET + Style.RESET_ALL if pre else ''
-    print("| " + Back.BLACK + "{pf}{msg}".format(pf=prefix, msg=msg) + Back.RESET + Fore.RESET + Style.RESET_ALL)
+def echo(*arg, pre: str = "", bar: str = "│", style: str = "echo", **options):
+    txt = rich.text.Text(style=style)
+    if bar:
+        txt.append(f"{bar} ")
+    if pre:
+        txt.append(f"({pre.capitalize()}) ", style="pre")
+    txt.append(rich.text.Text.from_markup((" ".join(arg))))
+    console.print(txt, **options)
 
 
-def title(msg, **options):
+def title(*arg, **options):
     """print something like a title"""
-    return echo(Style.BRIGHT + Fore.CYAN + "__{}__________________________".format(msg.upper().strip()) + Style.RESET_ALL + Fore.RESET, **options)
+    return console.print(rich.panel.Panel((" ".join(arg)).upper().strip(), highlight=True, expand=False))
 
 
-def ask(msg, **options):
-    return echo(Fore.YELLOW + msg, "?", **options)
+def ask(*arg, **options):
+    return echo(*arg, pre="?", style="ask", **options)
 
 
-def info(msg, **options):
-    return echo(msg, "info", **options)
+def info(*arg, **options):
+    return echo(*arg, pre="info", style="info", **options)
 
 
-def warn(msg, **options):
-    return echo(Fore.RED + msg, "warning", **options)
+def warn(*arg, **options):
+    return echo(*arg, pre="warning", style="warn", **options)
 
 
-def err(msg, **options):
-    return echo(Back.RED + Fore.WHITE + Style.BRIGHT + msg, "error", **options)
+def err(*arg, **options):
+    return echo(*arg, pre="error", style="err", **options)
 
 
-def dim(msg, **options):
-    return echo(Style.DIM + Fore.WHITE + msg, **options)
+def dim(*arg, **options):
+    return echo(*arg, style="dim white", **options)
 
 
-def pause(msg="Press Enter to Continue..."):
+def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
-    print('\n' + Fore.YELLOW + msg + Fore.RESET, end='')
-    input()
+    br()
+    echo(f"{rich.markup.escape(msg)}", bar="", style="pause", end="")
+    return input()
 
 
-def bye(msg=''):
+def bye(msg=""):
     """print msg and exit"""
     exit(msg)
 
 
-def get_input(question='', prompt='> '):
+def get_input(question="", prompt="> "):
     if question:
         ask(question)
     return str(input(prompt)).strip()
@@ -103,11 +122,11 @@ def get_choice(choices, exitable: bool = False):
         exitable: bool. Does `exit` is an option for user to select.
     """
     EXIT_WORD = "exit" if "0" in choices else "0"
+    fill = max(len(EXIT_WORD), 2)
     for index, item in enumerate(choices, start=1):
-        assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item)
-        echo(assemble_print)
+        echo(f"[yellow]{index:>{fill}})[/] [white]{item}[/]")
     if exitable:
-        echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=EXIT_WORD))
+        echo(f"[yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
     user_choice = get_input().strip()
     if exitable and user_choice == EXIT_WORD:
         return None
@@ -132,18 +151,18 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     EXIT_WORD = "exit" if "0" in choices else "0"
     DONE_WORD = "done" if "0" in choices else "0"
     ALL_WORD = "all" if "a" in choices else "a"
+    fill = max(len(EXIT_WORD), len(DONE_WORD), len(ALL_WORD), 2)
     user_choices = []
     while True:
         if allable:
-            echo("{Fore.YELLOW}{word:>2}) ** ALL **{Fore.RESET}".format(Fore=Fore, word=ALL_WORD))
+            echo(f"[yellow]{ALL_WORD:>{fill}}) ** [b]ALL[/] **")
         for index, item in enumerate(choices, start=1):
-            mark = "[+]" if item in user_choices else "[ ]"  # item is selected or not
-            assemble_print = "{Fore.YELLOW}{num:>2}){Fore.RESET} {mark} {Fore.WHITE}{itm}{Fore.RESET}".format(Fore=Fore, num=index, itm=item, mark=mark)
-            echo(assemble_print)
+            mark = r"\[[green]+[/]]" if item in user_choices else rich.markup.escape("[ ]")  # item is selected or not
+            echo(f"[yellow]{index:>{fill}})[/] {mark} [white]{item}")
         if user_choices:  # user selections > 0
-            echo("{Fore.YELLOW}{word:>2}) ** DONE **{Fore.RESET}".format(Fore=Fore, word=DONE_WORD))
+            echo(f"[yellow]{DONE_WORD:>{fill}}) ** [b]DONE[/] **")
         elif exitable:  # no user selection, but exitable is on.
-            echo("{Fore.YELLOW}{word:>2}) ** EXIT **{Fore.RESET}".format(Fore=Fore, word=EXIT_WORD))
+            echo(f"[yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
         user_choice = get_input().strip()
         if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
             if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
@@ -160,6 +179,16 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             user_choices = toggle_listitem(choices[index], user_choices)
         else:
             err("Please enter a valid choice.")
+
+
+def track(iterable, desc="", unit="", *arg, **options):
+    with rich.progress.Progress("│", rich.progress.SpinnerColumn(), *rich.progress.Progress.get_default_columns(),
+                                "·", rich.progress.MofNCompleteColumn(), unit) as progress:
+        task = progress.add_task(desc, total=None if not iterable or not len(iterable) else len(iterable))
+        while not progress.finished:
+            for item in iterable:
+                yield item
+                progress.update(task, advance=1)
 
 
 def read_file(path: str, with_encoding: bool = False, **kwargs):
