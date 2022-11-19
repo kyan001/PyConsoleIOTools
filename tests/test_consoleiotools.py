@@ -86,7 +86,7 @@ class test_consoleiotools(unittest.TestCase):
     def test_pause(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("\n")):  # simulate press enter
             cit.pause()
-            expect_word = "\n│ Press [Enter] to Continue..."
+            expect_word = "\nPress [Enter] to Continue..."
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_bye(self):

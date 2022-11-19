@@ -7,7 +7,7 @@ import rich.live
 import rich.text
 import rich.progress
 
-__version__ = "3.0.9"
+__version__ = "3.0.10"
 theme = rich.theme.Theme({
     "echo": "on black",
     "info": "",
@@ -15,7 +15,7 @@ theme = rich.theme.Theme({
     "err": "bright_white on red",
     "ask": "yellow",
     "title": "bright_cyan",
-    "pre": "dim white",
+    "pre": "dim",
     "pause": "yellow",
 })
 console = rich.console.Console(theme=theme)
@@ -99,7 +99,7 @@ def dim(*arg, **options):
 def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
     br()
-    echo(f"{rich.markup.escape(msg)}", style="pause", end="")
+    echo(f"{rich.markup.escape(msg)}", bar="", style="pause", end="")
     return input()
 
 
