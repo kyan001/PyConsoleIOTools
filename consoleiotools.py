@@ -7,7 +7,7 @@ import rich.live
 import rich.text
 import rich.progress
 
-__version__ = "3.0.10"
+__version__ = "3.1.0"
 theme = rich.theme.Theme({
     "echo": "on black",
     "info": "",
@@ -53,7 +53,7 @@ def start():
 
 
 def end():
-    console.rule("╰", align="left", style="dim")
+    console.print("╰")
 
 
 def br(count=1):

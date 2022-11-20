@@ -51,7 +51,7 @@ print(cit.__version__)
 | Hello World  # gray
 
 >>> cit.end()
-+ ------------------------
+`
 
 >>> cit.br()
 # blank line
@@ -166,7 +166,7 @@ def my_func():
 | HELLO() |
 +---------+
 | World
-+ ---------
+`
 
 @cit.as_session
 def underscore_orCamel():
@@ -176,5 +176,5 @@ def underscore_orCamel():
 +-----------------------+
 | UNDERSCORE OR CAMEL() |
 +-----------------------+
-+ -----------------------
+`
 ```

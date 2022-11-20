@@ -172,7 +172,7 @@ class test_consoleiotools(unittest.TestCase):
 ABC
 ╰
             """
-            self.assertEqual(fake_out.getvalue().strip().strip("─").strip(), expect_word.strip())
+            self.assertEqual(fake_out.getvalue().strip(), expect_word.strip())
 
     def test_as_session_2(self):
         @cit.as_session('DEF')
@@ -188,7 +188,7 @@ ABC
 ABC
 ╰
             """
-            self.assertEqual(fake_out.getvalue().strip().strip("─").strip(), expect_word.strip())
+            self.assertEqual(fake_out.getvalue().strip(), expect_word.strip())
 
     def test_as_session_3(self):
         @cit.as_session
@@ -204,7 +204,7 @@ ABC
 ABC
 ╰
             """
-            self.assertEqual(fake_out.getvalue().strip().strip("─").strip(), expect_word.strip())
+            self.assertEqual(fake_out.getvalue().strip(), expect_word.strip())
 
     def test_write_file(self):
         content = "3.1415926"
