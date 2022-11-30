@@ -8,15 +8,27 @@ import rich.progress
 import rich.traceback
 import rich.markdown
 
-__version__ = "3.2.16"
+__version__ = "3.3.1"
 theme = rich.theme.Theme({
     "echo": "on black",
+    "echo-bar": "on black",
+    "echo-pre": "dim on black",
     "info": "",
+    "info-bar": "",
+    "info-pre": "dim",
     "warn": "red",
+    "warn-bar": "red",
+    "warn-pre": "dim red",
     "err": "bright_white on red",
+    "err-bar": "bright_red",
+    "err-pre": "dim bright_red",
     "ask": "yellow",
+    "ask-bar": "yellow",
+    "ask-pre": "dim yellow",
+    "blur": "dim bright_white",
+    "blur-bar": "dim white",
+    "blur-pre": "dim white",
     "title": "bright_cyan",
-    "pre": "dim",
     "pause": "yellow",
 })
 console = rich.console.Console(theme=theme)  # main output printer
@@ -66,10 +78,10 @@ def br(count=1):
 def echo(*args, pre: str = "", bar: str = "│", style: str = "echo", **options):
     txt = rich.text.Text()
     if bar:
-        txt.append(f"{bar}", style=style)
+        txt.append(f"{bar}", style=f"{style}-bar")
         txt.append(" ")
     if pre:
-        txt.append(f"({pre.capitalize()})", style="pre")
+        txt.append(f"({pre.capitalize()})", style=f"{style}-pre")
         txt.append(" ")
     txt.append(" ".join([f"{arg}" for arg in args]), style=style)
     console.print(txt.markup, **options)
@@ -97,7 +109,7 @@ def err(*args, **options):
 
 
 def dim(*args, **options):
-    return echo(*args, style="dim white", **options)
+    return echo(*args, style="blur", **options)
 
 
 def print(*args, **options):
