@@ -9,6 +9,7 @@
 ```sh
 pip install consoleiotools  # install
 pip install --upgrade consoleiotools  # update
+python -m consoleiotools  # show README
 ```
 
 ## Get Started
@@ -32,8 +33,8 @@ print(cit.__version__)
 >>> cit.echo('Hello World')
 | Hello World
 
->>> cit.echo('Hello World', pre='say')
-| (Say) Hello World
+>>> cit.echo('Hello World', pre='say', bar='+')
++ (Say) Hello World
 
 >>> cit.ask('Hello World')
 | (?) Hello World
@@ -49,6 +50,14 @@ print(cit.__version__)
 
 >>> cit.dim('Hello World')
 | Hello World  # gray
+
+>>> cit.print(var)  # print variable
+...
+
+>>> cit.markdown("# Header")  # print Markdown
++--------------+
+|    Header    |
++--------------+
 
 >>> cit.end()
 `
@@ -69,54 +78,54 @@ print(cit.__version__)
 'Hello World'
 
 >>> cit.get_choice(['Apple', 'Google'])  # Enter number to select.
-|  1) Apple
-|  2) Google
+   1) Apple
+   2) Google
 > 2
 'Google'
 
 >>> cit.get_choice(['Apple', 'Google'])  # Enter string is ok too.
-|  1) Apple
-|  2) Google
+   1) Apple
+   2) Google
 > Google
 'Google'
 
 >>> cit.get_choice(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
-|  1) Apple
-|  2) Google
-|  0) ** EXIT **
+   1) Apple
+   2) Google
+   0) ** EXIT **
 > 0
 None
 
 >>> cit.get_choices(['Apple', 'Google'])  # Multiple Selection
-|  1) [ ] Apple
-|  2) [ ] Google
+   1) [ ] Apple
+   2) [ ] Google
 > 1  # Enter number to check or uncheck selections
-|  1) [+] Apple
-|  2) [ ] Google
-|  0) ** DONE **
+   1) [+] Apple
+   2) [ ] Google
+   0) ** DONE **
 > Google  # Enter string is ok too.
-|  1) [+] Apple
-|  2) [+] Google
-|  0) ** DONE **
+   1) [+] Apple
+   2) [+] Google
+   0) ** DONE **
 > 0  # Enter 0 when done.
 ['Apple', 'Google']  # return [] is no selections.
 
 >>> cit.get_choices(['Apple', 'Google'], allable=True)  # Add a choice of select all in menu.
-|  a) ** ALL **
-|  1) [ ] Apple
-|  2) [ ] Google
+   a) ** ALL **
+   1) [ ] Apple
+   2) [ ] Google
 > a  # Enter `a` to check all. If `a` is in choices, enter `all`.
-|  a) ** ALL **
-|  1) [+] Apple
-|  2) [+] Google
-|  0) ** DONE **
+   a) ** ALL **
+   1) [+] Apple
+   2) [+] Google
+   0) ** DONE **
 > 0
 ['Apple', 'Google']
 
 >>> cit.get_choices(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
-|  1) [ ] Apple
-|  2) [ ] Google
-|  0) ** EXIT **
+   1) [ ] Apple
+   2) [ ] Google
+   0) ** EXIT **
 > 0
 []  # Empty list returned.
 ```

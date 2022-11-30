@@ -49,6 +49,16 @@ class test_consoleiotools(unittest.TestCase):
             cit.echo("ABC", pre="prefix")
             self.assertEqual(fake_out.getvalue(), "│ (Prefix) ABC\n")
 
+    def test_echo_bar(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.echo("ABC", bar="BAR")
+            self.assertEqual(fake_out.getvalue(), "BAR ABC\n")
+
+    def test_markdown(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.markdown("### ABC")
+            self.assertEqual(fake_out.getvalue().strip(), "ABC")
+
     def test_title(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.title("ABC")
@@ -101,13 +111,13 @@ class test_consoleiotools(unittest.TestCase):
     def test_get_choice_index(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-            expect_word = "│  1) ABC\n│  2) DEF\n> "
+            expect_word = "   1) ABC\n   2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choice_string(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-            expect_word = "│  1) ABC\n│  2) DEF\n> "
+            expect_word = "   1) ABC\n   2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choices_done(self):

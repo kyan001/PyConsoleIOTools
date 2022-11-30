@@ -3,11 +3,12 @@ from functools import wraps
 import rich.console
 import rich.theme
 import rich.panel
-import rich.live
 import rich.text
 import rich.progress
+import rich.traceback
+import rich.markdown
 
-__version__ = "3.1.0"
+__version__ = "3.2.16"
 theme = rich.theme.Theme({
     "echo": "on black",
     "info": "",
@@ -18,7 +19,8 @@ theme = rich.theme.Theme({
     "pre": "dim",
     "pause": "yellow",
 })
-console = rich.console.Console(theme=theme)
+console = rich.console.Console(theme=theme)  # main output printer
+rich.traceback.install(show_locals=True)
 
 
 def as_session(name_or_func):  # decorator
@@ -61,39 +63,49 @@ def br(count=1):
     print('\n' * (count - 1))
 
 
-def echo(*arg, pre: str = "", bar: str = "│", style: str = "echo", **options):
-    txt = rich.text.Text(style=style)
+def echo(*args, pre: str = "", bar: str = "│", style: str = "echo", **options):
+    txt = rich.text.Text()
     if bar:
-        txt.append(f"{bar} ")
+        txt.append(f"{bar}", style=style)
+        txt.append(" ")
     if pre:
-        txt.append(f"({pre.capitalize()}) ", style="pre")
-    txt.append(rich.text.Text.from_markup((" ".join(arg))))
-    console.print(txt, **options)
+        txt.append(f"({pre.capitalize()})", style="pre")
+        txt.append(" ")
+    txt.append(" ".join([f"{arg}" for arg in args]), style=style)
+    console.print(txt.markup, **options)
 
 
-def title(*arg, **options):
+def title(*args, **options):
     """print something like a title"""
-    return console.print(rich.panel.Panel((" ".join(arg)).upper().strip(), highlight=True, expand=False))
+    return console.print(rich.panel.Panel((" ".join([f"{arg}" for arg in args])).upper().strip(), highlight=True, expand=False), **options)
 
 
-def ask(*arg, **options):
-    return echo(*arg, pre="?", style="ask", **options)
+def ask(*args, **options):
+    return echo(*args, pre="?", style="ask", **options)
 
 
-def info(*arg, **options):
-    return echo(*arg, pre="info", style="info", **options)
+def info(*args, **options):
+    return echo(*args, pre="info", style="info", **options)
 
 
-def warn(*arg, **options):
-    return echo(*arg, pre="warning", style="warn", **options)
+def warn(*args, **options):
+    return echo(*args, pre="warning", style="warn", **options)
 
 
-def err(*arg, **options):
-    return echo(*arg, pre="error", style="err", **options)
+def err(*args, **options):
+    return echo(*args, pre="error", style="err", **options)
 
 
-def dim(*arg, **options):
-    return echo(*arg, style="dim white", **options)
+def dim(*args, **options):
+    return echo(*args, style="dim white", **options)
+
+
+def print(*args, **options):
+    console.print(*args, **options)
+
+
+def markdown(*args, **options):
+    console.print(rich.markdown.Markdown(" ".join([f"{arg}" for arg in args])))
 
 
 def pause(msg="Press [Enter] to Continue..."):
@@ -124,9 +136,9 @@ def get_choice(choices, exitable: bool = False):
     EXIT_WORD = "exit" if "0" in choices else "0"
     fill = max(len(EXIT_WORD), 2)
     for index, item in enumerate(choices, start=1):
-        echo(f"[yellow]{index:>{fill}})[/] [white]{item}[/]")
+        console.print(f"  [yellow]{index:>{fill}})[/] [white]{item}[/]")
     if exitable:
-        echo(f"[yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
+        console.print(f"  [yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
     user_choice = get_input().strip()
     if exitable and user_choice == EXIT_WORD:
         return None
@@ -155,14 +167,14 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     user_choices = []
     while True:
         if allable:
-            echo(f"[yellow]{ALL_WORD:>{fill}}) ** [b]ALL[/] **")
+            console.print(f"  [yellow]{ALL_WORD:>{fill}}) ** [b]ALL[/] **")
         for index, item in enumerate(choices, start=1):
             mark = r"\[[green]+[/]]" if item in user_choices else rich.markup.escape("[ ]")  # item is selected or not
-            echo(f"[yellow]{index:>{fill}})[/] {mark} [white]{item}")
+            console.print(f"  [yellow]{index:>{fill}})[/] {mark} [white]{item}")
         if user_choices:  # user selections > 0
-            echo(f"[yellow]{DONE_WORD:>{fill}}) ** [b]DONE[/] **")
+            console.print(f"  [yellow]{DONE_WORD:>{fill}}) ** [b]DONE[/] **")
         elif exitable:  # no user selection, but exitable is on.
-            echo(f"[yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
+            console.print(f"  [yellow]{EXIT_WORD:>{fill}}) ** [b]EXIT[/] **")
         user_choice = get_input().strip()
         if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
             if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
@@ -181,7 +193,7 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             err("Please enter a valid choice.")
 
 
-def track(iterable, desc="", unit="", *arg, **options):
+def track(iterable, desc="", unit="", *args, **options):
     with rich.progress.Progress("│", rich.progress.SpinnerColumn(), *rich.progress.Progress.get_default_columns(),
                                 "·", rich.progress.MofNCompleteColumn(), unit) as progress:
         task = progress.add_task(desc, total=None if not iterable or not len(iterable) else len(iterable))
@@ -204,3 +216,7 @@ def write_file(path: str, content: str, overwrite: bool = False, **kwargs):
     mode = 'w' if overwrite else 'a'
     with open(path, mode=mode, encoding='utf-8', **kwargs) as fl:
         return fl.write(content)
+
+
+if __name__ == "__main__":
+    markdown(read_file("README.md"))
