@@ -54,10 +54,20 @@ print(cit.__version__)
 >>> cit.print(var)  # print variable
 ...
 
->>> cit.markdown("# Header")  # print Markdown
+>>> cit.markdown("# Header")  # print markdown
 +--------------+
 |    Header    |
 +--------------+
+
+>>> cit.panel("Panel", title="Panel Title", subtitle="Panel Subtitle")  # print text in a panel
++---------- Panel Title ----------+
+| Panel                           |  # full width
++-------- Panel Subtitle ---------+
+
+>>> cit.panel("Panel", title="Panel Title", subtitle="Panel Subtitle", expand=False, style="blue")  # fit panel to text
++- Panel Title -+  # blue
+| Panel         |
++- Panel Subtit-+
 
 >>> cit.end()
 `

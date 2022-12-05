@@ -59,6 +59,15 @@ class test_consoleiotools(unittest.TestCase):
             cit.markdown("### ABC")
             self.assertEqual(fake_out.getvalue().strip(), "ABC")
 
+    def test_panel(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.panel("ABC", title="ABC", subtitle="ABC", expand=False, style="dim")
+            self.assertEqual(fake_out.getvalue().strip(), """
+╭─ ABC ─╮
+│ ABC   │
+╰─ ABC ─╯
+            """.strip())
+
     def test_title(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.title("ABC")
@@ -175,14 +184,13 @@ class test_consoleiotools(unittest.TestCase):
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
-            expect_word = """
+            self.assertEqual(fake_out.getvalue().strip(), """
 ╭────────╮
 │ FUNC() │
 ╰────────╯
 ABC
 ╰
-            """
-            self.assertEqual(fake_out.getvalue().strip(), expect_word.strip())
+            """.strip())
 
     def test_as_session_2(self):
         @cit.as_session('DEF')
@@ -191,14 +199,13 @@ ABC
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
-            expect_word = """
+            self.assertEqual(fake_out.getvalue().strip(), """
 ╭───────╮
 │ DEF() │
 ╰───────╯
 ABC
 ╰
-            """
-            self.assertEqual(fake_out.getvalue().strip(), expect_word.strip())
+            """.strip())
 
     def test_as_session_3(self):
         @cit.as_session
@@ -207,14 +214,13 @@ ABC
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             underscore_orCamel()
-            expect_word = """
+            self.assertEqual(fake_out.getvalue().strip(), """
 ╭───────────────────────╮
 │ UNDERSCORE OR CAMEL() │
 ╰───────────────────────╯
 ABC
 ╰
-            """
-            self.assertEqual(fake_out.getvalue().strip(), expect_word.strip())
+            """.strip())
 
     def test_write_file(self):
         content = "3.1415926"

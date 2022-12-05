@@ -8,7 +8,7 @@ import rich.progress
 import rich.traceback
 import rich.markdown
 
-__version__ = "3.3.1"
+__version__ = "3.4.3"
 theme = rich.theme.Theme({
     "echo": "on black",
     "echo-bar": "on black",
@@ -78,10 +78,10 @@ def br(count=1):
 def echo(*args, pre: str = "", bar: str = "│", style: str = "echo", **options):
     txt = rich.text.Text()
     if bar:
-        txt.append(f"{bar}", style=f"{style}-bar")
+        txt.append(f"{bar}", style=f"{style}-bar" if f"{style}-bar" in theme.styles else style)
         txt.append(" ")
     if pre:
-        txt.append(f"({pre.capitalize()})", style=f"{style}-pre")
+        txt.append(f"({pre.capitalize()})", style=f"{style}-pre" if f"{style}-pre" in theme.styles else style)
         txt.append(" ")
     txt.append(" ".join([f"{arg}" for arg in args]), style=style)
     console.print(txt.markup, **options)
@@ -89,7 +89,7 @@ def echo(*args, pre: str = "", bar: str = "│", style: str = "echo", **options)
 
 def title(*args, **options):
     """print something like a title"""
-    return console.print(rich.panel.Panel((" ".join([f"{arg}" for arg in args])).upper().strip(), highlight=True, expand=False), **options)
+    console.print(rich.panel.Panel((" ".join([f"{arg}" for arg in args])).upper().strip(), highlight=True, expand=False), **options)
 
 
 def ask(*args, **options):
@@ -118,6 +118,10 @@ def print(*args, **options):
 
 def markdown(*args, **options):
     console.print(rich.markdown.Markdown(" ".join([f"{arg}" for arg in args])))
+
+
+def panel(txt, title="", subtitle="", expand=True, highlight=True, style="", **options):
+    return console.print(rich.panel.Panel(txt, title=title, subtitle=subtitle, highlight=highlight, expand=expand, style=style, border_style=f"{style}-pre" if f"{style}-pre" in theme.styles else "", **options))
 
 
 def pause(msg="Press [Enter] to Continue..."):
