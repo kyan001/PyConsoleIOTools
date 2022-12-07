@@ -33,8 +33,8 @@ print(cit.__version__)
 >>> cit.echo('Hello World')
 | Hello World
 
->>> cit.echo('Hello World', pre='say', bar='+')
-+ (Say) Hello World
+>>> cit.echo('Hello World', pre='say', bar='!')
+! (Say) Hello World
 
 >>> cit.ask('Hello World')
 | (?) Hello World
@@ -48,8 +48,8 @@ print(cit.__version__)
 >>> cit.err('Hello World')
 | (Error) Hello World
 
->>> cit.dim('Hello World')
-| Hello World  # gray
+>>> cit.mute('Hello World')
+| Hello World  # muted by dim
 
 >>> cit.print(var)  # print variable
 ...
@@ -58,6 +58,13 @@ print(cit.__version__)
 +--------------+
 |    Header    |
 +--------------+
+
+>>> cit.rule()  # print horizontal rule
+----------------------------------------
+
+>>> cit.rule("Title", style="blue", align="center")  # print horizontal rule with Title. align = center|left|right
+---------------- Title ----------------
+
 
 >>> cit.panel("Panel", title="Panel Title", subtitle="Panel Subtitle")  # print text in a panel
 +---------- Panel Title ----------+
@@ -78,6 +85,11 @@ print(cit.__version__)
 >>> cit.br(2)
 # blank line
 # blank line
+
+>>> for var in cit.track(iterables, "Progress"): pass
+| ⠧ Progress ━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━  52% 0:00:52 ·  52/100
+
+>>> cit.__ascii__ = True  # use ascii chars only.
 ```
 
 ## Get User Input
@@ -88,54 +100,54 @@ print(cit.__version__)
 'Hello World'
 
 >>> cit.get_choice(['Apple', 'Google'])  # Enter number to select.
-   1) Apple
-   2) Google
+|  1) Apple
+|  2) Google
 > 2
 'Google'
 
 >>> cit.get_choice(['Apple', 'Google'])  # Enter string is ok too.
-   1) Apple
-   2) Google
+|  1) Apple
+|  2) Google
 > Google
 'Google'
 
 >>> cit.get_choice(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
-   1) Apple
-   2) Google
-   0) ** EXIT **
+|  1) Apple
+|  2) Google
+|  0) ** EXIT **
 > 0
 None
 
 >>> cit.get_choices(['Apple', 'Google'])  # Multiple Selection
-   1) [ ] Apple
-   2) [ ] Google
+|  1) [ ] Apple
+|  2) [ ] Google
 > 1  # Enter number to check or uncheck selections
-   1) [+] Apple
-   2) [ ] Google
-   0) ** DONE **
+|  1) [+] Apple
+|  2) [ ] Google
+|  0) ** DONE **
 > Google  # Enter string is ok too.
-   1) [+] Apple
-   2) [+] Google
-   0) ** DONE **
+|  1) [+] Apple
+|  2) [+] Google
+|  0) ** DONE **
 > 0  # Enter 0 when done.
 ['Apple', 'Google']  # return [] is no selections.
 
 >>> cit.get_choices(['Apple', 'Google'], allable=True)  # Add a choice of select all in menu.
-   a) ** ALL **
-   1) [ ] Apple
-   2) [ ] Google
+|  a) ** ALL **
+|  1) [ ] Apple
+|  2) [ ] Google
 > a  # Enter `a` to check all. If `a` is in choices, enter `all`.
-   a) ** ALL **
-   1) [+] Apple
-   2) [+] Google
-   0) ** DONE **
+|  a) ** ALL **
+|  1) [+] Apple
+|  2) [+] Google
+|  0) ** DONE **
 > 0
 ['Apple', 'Google']
 
 >>> cit.get_choices(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
-   1) [ ] Apple
-   2) [ ] Google
-   0) ** EXIT **
+|  1) [ ] Apple
+|  2) [ ] Google
+|  0) ** EXIT **
 > 0
 []  # Empty list returned.
 ```
