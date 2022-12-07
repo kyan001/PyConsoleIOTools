@@ -32,7 +32,14 @@ class test_consoleiotools(unittest.TestCase):
     def test_end(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.end()
-            self.assertTrue('\n' in fake_out.getvalue())
+            self.assertEqual('╰', fake_out.getvalue().strip())
+
+    def test_ascii(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.__ascii__ = True
+            cit.end()
+            cit.__ascii__ = False
+            self.assertEqual("`", fake_out.getvalue().strip())
 
     def test_br(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -97,16 +104,20 @@ class test_consoleiotools(unittest.TestCase):
             cit.err("ABC")
             self.assertEqual(fake_out.getvalue(), "│ (Error) ABC\n")
 
-    def test_dim(self):
+    def test_mute(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
-            cit.dim("ABC")
+            cit.mute("ABC")
             self.assertEqual(fake_out.getvalue(), "│ ABC\n")
 
     def test_pause(self):
-        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("\n")):  # simulate press enter
+        with patch("sys.stdin", new=StringIO("\n")):  # simulate press enter
             cit.pause()
-            expect_word = "\nPress [Enter] to Continue..."
-            self.assertEqual(fake_out.getvalue(), expect_word)
+
+    def test_track(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            for i in cit.track(range(5), disable=True):
+                print(i)
+            self.assertEqual("0\n1\n2\n3\n4\n\n", fake_out.getvalue())
 
     def test_bye(self):
         self.assertRaises(SystemExit, cit.bye, None)
@@ -120,37 +131,37 @@ class test_consoleiotools(unittest.TestCase):
     def test_get_choice_index(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-            expect_word = "   1) ABC\n   2) DEF\n> "
+            expect_word = "│  1) ABC\n│  2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choice_string(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
-            expect_word = "   1) ABC\n   2) DEF\n> "
+            expect_word = "│  1) ABC\n│  2) DEF\n> "
             self.assertEqual(fake_out.getvalue(), expect_word)
 
     def test_get_choices_done(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n0\n")):
             self.assertEqual(cit.get_choices(["ABC", "DEF"]), ["ABC", ])
-            expect_word = "0) ** DONE **"
+            expect_word = "DONE"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_get_choices_done_esc(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\ndone\n")):
             self.assertEqual(cit.get_choices(["ABC", "0"]), ["ABC", ])
-            expect_word = "done) ** DONE **"
+            expect_word = "done)"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_get_choices_exitable_esc(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("exit\n")):
             self.assertEqual(cit.get_choices(["ABC", "0"], exitable=True), [])
-            expect_word = "exit) ** EXIT **"
+            expect_word = "exit)"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_get_choices_exitable(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("0\n")):
             self.assertEqual(cit.get_choices(["ABC", "DEF"], exitable=True), [])
-            expect_word = "0) ** EXIT **"
+            expect_word = "EXIT"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_get_choices_allable_off(self):
@@ -162,19 +173,19 @@ class test_consoleiotools(unittest.TestCase):
     def test_get_choices_allable_esc(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("all\n0\n")):  # allable off
             self.assertEqual(cit.get_choices(["a", "DEF"], allable=True, exitable=True), ["a", "DEF"])
-            expect_word = "all) ** ALL **"
+            expect_word = "all)"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_get_choices_allable_select(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("a\n0\n")):  # allable on
             self.assertEqual(cit.get_choices(["ABC", "DEF"], allable=True), ["ABC", "DEF"])
-            expect_word = "a) ** ALL **"
+            expect_word = "ALL"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_get_choices_allable_unselect(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("a\na\n0\n")):  # allable on, unselect all.
             self.assertEqual(cit.get_choices(["ABC", "DEF"], allable=True, exitable=True), [])
-            expect_word = "[+] ABC"
+            expect_word = "[✓] ABC"
             self.assertTrue(expect_word in fake_out.getvalue())
 
     def test_as_session_1(self):
