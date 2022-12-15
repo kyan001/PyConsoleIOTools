@@ -4,11 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "consoleiotools"
-description = "Some console tools for inputs and outputs"
+description = "Console tools for inputs and outputs in Python"
 requires-python = ">=3.6"
-authors = [{name = "Kyan"}]
 readme = "README.md"
-keywords = ["console", "input", "output", "tool"]
+keywords = ["python", "console", "input", "output", "tool"]
 license = {file = "LICENSE"}
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -21,11 +20,17 @@ classifiers = [
 dependencies = ["rich"]
 dynamic = ["version"]
 
+[[project.authors]]
+name = "Kyan"
+email = "kai@kyan001.com"
+
 [project.optional-dependencies]
 dev = ["build", "wheel", "pycodestyle"]
 
 [project.urls]
-homepage = "https://github.com/kyan001/PyConsoleIOTools"
+Homepage = "https://github.com/kyan001/PyConsoleIOTools"
+"Issue Tracker" = "https://github.com/kyan001/PyConsoleIOTools/issues"
+"Source Code" = "https://github.com/kyan001/PyConsoleIOTools"
 
 [tool.setuptools]
 py-modules = ["consoleiotools"]

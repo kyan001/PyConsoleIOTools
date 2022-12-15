@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.0.3"
+__version__ = "4.0.4"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
