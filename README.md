@@ -87,7 +87,7 @@ print(cit.__version__)
 # blank line
 
 >>> for var in cit.track(iterables, "Progress"): pass
-| ⠧ Progress ━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━  52% 0:00:52 ·  52/100
+| : Progress ---------------------===================  52% 0:00:52 - 52/100
 
 >>> cit.__ascii__ = True  # use ascii chars only.
 ```
