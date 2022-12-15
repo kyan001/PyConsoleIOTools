@@ -5,7 +5,7 @@ import time
 import consoleiotools as cit
 
 
-def func_example(func_name, *args, **kwargs):
+def inspect(func_name, *args, **kwargs):
     cit.br()
     args_txt = ""
     if args:
@@ -28,32 +28,32 @@ class fake_input():
 
 
 def examples():
-    func_example("start")
-    func_example("title", "This is a title")
-    func_example("echo", "This is a normal print.")
-    func_example("ask", "This is a question.")
-    func_example("info", "This is a info message.")
-    func_example("warn", "This is a warning message.")
-    func_example("err", "This is an error message.")
-    func_example("mute", "This is a muted message.")
-    func_example("end")
-    func_example("print", "This is a [blue]COLORFUL[/] print.")
-    func_example("markdown", "> *This* **is** a `markdown` print.")
-    func_example(
+    inspect("start")
+    inspect("title", "This is a title")
+    inspect("echo", "This is a normal print.")
+    inspect("ask", "This is a question.")
+    inspect("info", "This is a info message.")
+    inspect("warn", "This is a warning message.")
+    inspect("err", "This is an error message.")
+    inspect("mute", "This is a muted message.")
+    inspect("end")
+    inspect("print", "This is a [blue]COLORFUL[/] print.")
+    inspect("markdown", "> *This* **is** a `markdown` print.")
+    inspect(
         "panel",
         "This is a panel.",
         title="Title",
         subtitle="Subtitle",
         expand=False
     )
-    func_example("br")
-    func_example("rule", "This is a horizontal rule.")
+    inspect("br")
+    inspect("rule", "This is a horizontal rule.")
     with fake_input("Apple\n"):
-        result = func_example("get_input", "Get user input:")
+        result = inspect("get_input", "Get user input:")
         print("Apple")
         print(repr(result))
     with fake_input("1\n"):
-        result = func_example(
+        result = inspect(
             "get_choice",
             [
                 "Apple",
@@ -64,7 +64,7 @@ def examples():
         print("2")
         print(repr(result))
     with fake_input("0\n"):
-        result = func_example(
+        result = inspect(
             "get_choices",
             [
                 "Apple",
@@ -75,10 +75,10 @@ def examples():
         )
         print("0")
         print(result)
-    func_example("track", "range(10), desc='Progress', unit='unit'")
+    inspect("track", "range(10), desc='Progress', unit='unit'")
     for i in cit.track(range(10), desc="Progress", unit="unit"):
         time.sleep(0.1)
-    func_example("pause")
+    inspect("pause")
 
 
 if __name__ == "__main__":
