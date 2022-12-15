@@ -7,7 +7,7 @@ import consoleiotools as cit
 
 def func_example(func_name, *args, **kwargs):
     cit.br()
-    cit.print(f"{'*' if cit.__ascii__ else '•'} [cyan u]{func_name}[dim]()")
+    cit.print(f"[dim bright_white]# {func_name}()")
     if args or kwargs:
         return getattr(cit, func_name)(*args, **kwargs)
     else:

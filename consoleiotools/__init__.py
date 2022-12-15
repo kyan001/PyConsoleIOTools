@@ -9,11 +9,12 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.0.0"
+__version__ = "4.0.3"
+__ascii__ = False
 theme = rich.theme.Theme({
-    "echo": "on black",
-    "echo-bar": "on black",
-    "echo-pre": "dim on black",
+    "echo": "bright_white",
+    "echo-bar": "",
+    "echo-pre": "dim bright_white",
     "info": "",
     "info-bar": "",
     "info-pre": "dim",
@@ -29,12 +30,11 @@ theme = rich.theme.Theme({
     "muted": "dim bright_white",
     "muted-bar": "dim white",
     "muted-pre": "dim white",
-    "title": "bright_yellow",
-    "pause": "magenta",
+    "title": "bright_magenta",
+    "pause": "bright_yellow",
     "choice-i": "yellow",
-    "choice-cmd": "bright_yellow underline",
+    "choice-cmd": "yellow underline",
 })
-__ascii__ = False
 console = rich.console.Console(theme=theme)  # main output printer
 rich.traceback.install()
 
@@ -62,7 +62,7 @@ def as_session(name_or_func):  # decorator
         @wraps(func)
         def wrapper(*args, **kwargs):
             start()
-            title(f"{name}()")
+            title(name)
             result = func(*args, **kwargs)
             end()
             return result
@@ -91,8 +91,10 @@ def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: st
     if pre:
         txt.append(f"({pre.capitalize()})", style=f"{style}-pre" if f"{style}-pre" in theme.styles else style)
         txt.append(" ")
-    txt.append(" ".join([f"{arg}" for arg in args]), style=style)
-    console.print(txt.markup, **options)
+    contents = rich.text.Text(" ").join(rich.text.Text.from_markup(f"{arg}") for arg in args)
+    contents.stylize(style)
+    txt.append(contents)
+    console.print(txt, **options)
 
 
 def title(*args, **options):
@@ -150,7 +152,7 @@ def panel(txt, title="", subtitle="", expand=True, highlight=True, style="", **o
 
 def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
-    with console.status(f"[pause]{rich.markup.escape(msg)}", spinner="point"):
+    with console.status(f"[pause]{rich.markup.escape(msg)}", spinner="point", spinner_style="pause"):
         return input()
 
 

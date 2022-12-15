@@ -196,9 +196,9 @@ class test_consoleiotools(unittest.TestCase):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
             self.assertEqual(fake_out.getvalue().strip(), """
-╭────────╮
-│ FUNC() │
-╰────────╯
+╭──────╮
+│ FUNC │
+╰──────╯
 ABC
 ╰
             """.strip())
@@ -211,9 +211,9 @@ ABC
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
             self.assertEqual(fake_out.getvalue().strip(), """
-╭───────╮
-│ DEF() │
-╰───────╯
+╭─────╮
+│ DEF │
+╰─────╯
 ABC
 ╰
             """.strip())
@@ -226,9 +226,9 @@ ABC
         with patch("sys.stdout", new=StringIO()) as fake_out:
             underscore_orCamel()
             self.assertEqual(fake_out.getvalue().strip(), """
-╭───────────────────────╮
-│ UNDERSCORE OR CAMEL() │
-╰───────────────────────╯
+╭─────────────────────╮
+│ UNDERSCORE OR CAMEL │
+╰─────────────────────╯
 ABC
 ╰
             """.strip())
