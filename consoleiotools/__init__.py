@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.0.4"
+__version__ = "4.0.5"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -164,7 +164,9 @@ def bye(msg=""):
 def get_input(question="", prompt="> "):
     if question:
         ask(question)
-    return str(input(prompt)).strip()
+    if prompt:
+        console.print(prompt, end="")
+    return str(input()).strip()
 
 
 def get_choice(choices, exitable: bool = False):
