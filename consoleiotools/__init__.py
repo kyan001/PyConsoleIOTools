@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.0.5"
+__version__ = "4.1.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -161,15 +161,26 @@ def bye(msg=""):
     exit(msg)
 
 
-def get_input(question="", prompt="> "):
+def get_input(question: str = "", prompt: str = "> ", default: str = "") -> str:
+    """Get user input in stdin.
+
+    Args:
+        question: str. The question asked before get the answer.
+        prompt: str. The prompt shows in the same line with the input field. Always ending with a space.
+        default: str. If the answer is empty, default value returns.
+    """
+    if default:
+        prompt += f"[dim]({default})[/]"
     if question:
         ask(question)
     if prompt:
-        console.print(prompt, end="")
-    return str(input()).strip()
+        console.print(prompt.strip(), end=" ")
+    answer = str(input()).strip()
+    br()
+    return answer or default
 
 
-def get_choice(choices, exitable: bool = False):
+def get_choice(choices, exitable: bool = False) -> str:
     """Get user choice from a given list
 
     Args:

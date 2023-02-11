@@ -94,9 +94,23 @@ print(cit.__version__)
 ## Get User Input
 
 ```python
->>> cit.get_input()
+>>> cit.get_input()  # Get user input from stdin
 > Hello World
 'Hello World'
+
+>>> cit.get_input("Question?")  # With a question
+| (?) Question?
+> Yes
+'Yes'
+
+>>> cit.get_input(prompt="Answer:")  # With a customized prompt.
+Answer: Apple
+'Apple'
+
+>>> cit.get_input("Continue?", default="yes")  # With a default answer.
+| (?) Continue?
+> (yes)  # Entered nothing
+'yes'
 
 >>> cit.get_choice(['Apple', 'Google'])  # Enter number to select.
 |  1) Apple
