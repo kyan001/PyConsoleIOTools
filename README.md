@@ -112,6 +112,10 @@ Answer: Apple
 > (yes)  # Entered nothing
 'yes'
 
+>>> cit.get_input(strip=False)  # Do not remove leading and trailing whitespaces from user input.
+>       # Whitespaces
+'    '
+
 >>> cit.get_choice(['Apple', 'Google'])  # Enter number to select.
 |  1) Apple
 |  2) Google

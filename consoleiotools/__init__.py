@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.1.0"
+__version__ = "4.2.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -161,13 +161,14 @@ def bye(msg=""):
     exit(msg)
 
 
-def get_input(question: str = "", prompt: str = "> ", default: str = "") -> str:
+def get_input(question: str = "", prompt: str = "> ", default: str = "", strip: bool = True) -> str:
     """Get user input in stdin.
 
     Args:
         question: str. The question asked before get the answer.
         prompt: str. The prompt shows in the same line with the input field. Always ending with a space.
         default: str. If the answer is empty, default value returns.
+        strip: bool. Remove leading and trailing whitespaces from user input or not. Default is True.
     """
     if default:
         prompt += f"[dim]({default})[/]"
@@ -175,9 +176,13 @@ def get_input(question: str = "", prompt: str = "> ", default: str = "") -> str:
         ask(question)
     if prompt:
         console.print(prompt.strip(), end=" ")
-    answer = str(input()).strip()
-    br()
-    return answer or default
+    answer = input()
+    if strip:
+        answer = answer.strip()
+    if answer == "":
+        br()
+        return default
+    return answer
 
 
 def get_choice(choices, exitable: bool = False) -> str:

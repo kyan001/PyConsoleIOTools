@@ -146,6 +146,14 @@ class test_consoleiotools(unittest.TestCase):
             self.assertIn("> (answer) ", fake_out.getvalue())
             self.assertEqual(userinput, "answer")
 
+    def test_get_input_strip(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("  ABC  \n")):
+            userinput = cit.get_input(strip=True)
+            self.assertEqual(userinput, "ABC")
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("  ABC  \n")):
+            userinput = cit.get_input(strip=False)
+            self.assertEqual(userinput, "  ABC  ")
+
     def test_get_choice(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("1\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
