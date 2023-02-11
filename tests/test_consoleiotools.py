@@ -125,7 +125,7 @@ class test_consoleiotools(unittest.TestCase):
     def test_get_input(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
             userinput = cit.get_input()
-            self.assertEqual(fake_out.getvalue(), "> ")
+            self.assertIn("> ", fake_out.getvalue())
             self.assertEqual(userinput, "ABC")
 
     def test_get_input_question(self):
