@@ -16,9 +16,12 @@ def inspect(func_name, *args, **kwargs):
     return getattr(cit, func_name)(*args, **kwargs)
 
 
-class fake_input():
-    def __init__(self, user_input: str):
-        self.user_input = user_input
+class fake_input:
+    def __init__(self, user_input: str, double: bool = False):
+        self.double = double
+        self.user_input = user_input.strip().strip("\n") + "\n"
+        if double:
+            self.user_input += self.user_input
 
     def __enter__(self):
         sys.stdin = io.StringIO(self.user_input)
@@ -48,11 +51,11 @@ def examples():
     )
     inspect("br")
     inspect("rule", "This is a horizontal rule.")
-    with fake_input("Apple\n"):
+    with fake_input("Apple"):
         result = inspect("get_input", "Get user input:")
         print("Apple")
         print(repr(result))
-    with fake_input("1\n"):
+    with fake_input("1"):
         result = inspect(
             "get_choice",
             [
@@ -63,7 +66,7 @@ def examples():
         )
         print("2")
         print(repr(result))
-    with fake_input("0\n"):
+    with fake_input("0"):
         result = inspect(
             "get_choices",
             [
@@ -82,5 +85,8 @@ def examples():
 
 
 if __name__ == "__main__":
-    cit.panel(f"cit.__version__ = {cit.__version__}\ncit.__ascii__ = {cit.__ascii__}", title="ConsoleIOTools Features")
+    cit.panel("\n".join([
+        f"cit.__version__ = {cit.__version__}",
+        f"cit.__ascii__ = {cit.__ascii__}"
+    ]), title="ConsoleIOTools Features")
     examples()
