@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.2.2"
+__version__ = "4.3.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -195,11 +195,13 @@ def get_choice(choices, exitable: bool = False) -> str:
     EXIT_WORD = "exit" if "0" in choices else "0"
     DECO_WORD = "[dim]{}[/]".format("--" if __ascii__ else "──")
     BAR_WORD = "|" if __ascii__ else "│"
+    CMD_TEXT = "[{color}]{icon}[/] [choice-cmd]{text}[/]"
+    EXIT_TEXT = CMD_TEXT.format(color="red", icon='~' if __ascii__ else '✗', text="EXIT")
     fill = max(len(EXIT_WORD), 2)
     for index, item in enumerate(choices, start=1):
         console.print(f"{BAR_WORD} [choice-i]{index:>{fill}}[/][dim])[/] [white]{item}[/]")
     if exitable:
-        console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} [choice-cmd]EXIT[/] {DECO_WORD}")
+        console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {EXIT_TEXT} {DECO_WORD}")
     user_choice = get_input().strip()
     if exitable and user_choice == EXIT_WORD:
         return None
@@ -224,22 +226,25 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     EXIT_WORD = "exit" if "0" in choices else "0"
     DONE_WORD = "done" if "0" in choices else "0"
     ALL_WORD = "all" if "a" in choices else "a"
-    DECO_WORD = "[dim]{}[/]".format("--" if __ascii__ else "──")
+    DECO_WORD = f"[dim]{'--' if __ascii__ else '──'}[/]"
     BAR_WORD = "|" if __ascii__ else "│"
     BRACKET_WORD = "[cyan]" + rich.console.escape("[") + "{}][/]"
+    CMD_TEXT = "[{color}]{icon}[/] [choice-cmd]{text}[/]"
+    ALL_TEXT = CMD_TEXT.format(color="yellow", icon='+' if __ascii__ else '❍', text="ALL")
+    EXIT_TEXT = CMD_TEXT.format(color="red", icon='~' if __ascii__ else '✗', text="EXIT")
+    DONE_TEXT = CMD_TEXT.format(color="green", icon='=' if __ascii__ else '✓', text="DONE")
     fill = max(len(EXIT_WORD), len(DONE_WORD), len(ALL_WORD), 2)
     user_choices = []
     while True:
         if allable:
-            console.print(f"{BAR_WORD} [choice-i]{ALL_WORD:>{fill}}[/][dim])[/] {DECO_WORD} [choice-cmd]ALL[/] {DECO_WORD}")
+            console.print(f"{BAR_WORD} [choice-i]{ALL_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {ALL_TEXT} {DECO_WORD}")
         for index, item in enumerate(choices, start=1):
-
             mark = BRACKET_WORD.format(f"[bright_green]{'+' if __ascii__ else '✓'}[/]") if item in user_choices else BRACKET_WORD.format(" ")  # item is selected or not
             console.print(f"{BAR_WORD} [choice-i]{index:>{fill}}[/][dim])[/] {mark} [white]{item}")
         if user_choices:  # user selections > 0
-            console.print(f"{BAR_WORD} [choice-i]{DONE_WORD:>{fill}}[/][dim])[/] {DECO_WORD} [choice-cmd]DONE[/] {DECO_WORD}")
+            console.print(f"{BAR_WORD} [choice-i]{DONE_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {DONE_TEXT} {DECO_WORD}")
         elif exitable:  # no user selection, but exitable is on.
-            console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} [choice-cmd]EXIT[/] {DECO_WORD}")
+            console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {EXIT_TEXT} {DECO_WORD}")
         user_choice = get_input().strip()
         if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
             if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
