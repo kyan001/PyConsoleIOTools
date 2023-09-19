@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.3.0"
+__version__ = "4.4.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -150,9 +150,13 @@ def panel(txt, title="", subtitle="", expand=True, highlight=True, style="", **o
     )
 
 
+def escape(txt: str) -> str:
+    return rich.markup.escape(txt)
+
+
 def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
-    with console.status(f"[pause]{rich.markup.escape(msg)}", spinner="point", spinner_style="pause"):
+    with console.status(f"[pause]{escape(msg)}", spinner="point", spinner_style="pause"):
         return input()
 
 
@@ -228,7 +232,7 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
     ALL_WORD = "all" if "a" in choices else "a"
     DECO_WORD = f"[dim]{'--' if __ascii__ else '──'}[/]"
     BAR_WORD = "|" if __ascii__ else "│"
-    BRACKET_WORD = "[cyan]" + rich.console.escape("[") + "{}][/]"
+    BRACKET_WORD = "[cyan]" + escape("[{}]") + "[/]"
     CMD_TEXT = "[{color}]{icon}[/] [choice-cmd]{text}[/]"
     ALL_TEXT = CMD_TEXT.format(color="yellow", icon='+' if __ascii__ else '❍', text="ALL")
     EXIT_TEXT = CMD_TEXT.format(color="red", icon='~' if __ascii__ else '✗', text="EXIT")

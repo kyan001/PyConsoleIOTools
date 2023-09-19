@@ -109,6 +109,16 @@ class test_consoleiotools(unittest.TestCase):
             cit.mute("ABC")
             self.assertEqual(fake_out.getvalue(), "│ ABC\n")
 
+    def test_print(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.print("ABC")
+            self.assertEqual(fake_out.getvalue(), "ABC\n")
+
+    def test_print(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.print(cit.escape("[test]ABC"))
+            self.assertEqual(fake_out.getvalue(), "[test]ABC\n")
+
     def test_pause(self):
         with patch("sys.stdin", new=StringIO("\n")):  # simulate press enter
             cit.pause()

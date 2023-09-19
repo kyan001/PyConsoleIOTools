@@ -50,8 +50,11 @@ print(cit.__version__)
 >>> cit.mute('Hello World')
 | Hello World  # muted by dim
 
->>> cit.print(var)  # print variable
-...
+>>> cit.print("[yellow]Hello World[/]")  # print with styles
+Hello World
+
+>>> cit.print(cit.escape("[yellow]Hello World[/]"))  # escape `[` -> `\[` if not escaped. escape `\` -> `\\` if not used as escape char.
+[\]
 
 >>> cit.markdown("# Header")  # print markdown
 +--------------+
