@@ -24,30 +24,30 @@ print(cit.__version__)
 >>> cit.start()
 # blank line
 
->>> cit.title('Session Name')
+>>> cit.title("Session Name")
 +--------------+
 | SESSION NAME |
 +--------------+
 
->>> cit.echo('Hello World')
+>>> cit.echo("Hello World")
 | Hello World
 
->>> cit.echo('Hello World', pre='say', bar='!')
+>>> cit.echo("Hello World", pre="say", bar="!")
 ! (Say) Hello World
 
->>> cit.ask('Hello World')
+>>> cit.ask("Hello World")
 | (?) Hello World
 
->>> cit.info('Hello World')
+>>> cit.info("Hello World")
 | (Info) Hello World
 
->>> cit.warn('Hello World')
+>>> cit.warn("Hello World")
 | (Warning) Hello World
 
->>> cit.err('Hello World')
+>>> cit.err("Hello World")
 | (Error) Hello World
 
->>> cit.mute('Hello World')
+>>> cit.mute("Hello World")
 | Hello World  # muted by dim
 
 >>> cit.print("[yellow]Hello World[/]")  # print with styles
@@ -119,26 +119,26 @@ Answer: Apple
 >       # Whitespaces
 '    '
 
->>> cit.get_choice(['Apple', 'Google'])  # Enter number to select.
+>>> cit.get_choice(["Apple", "Google"])  # Enter number to select.
 |  1) Apple
 |  2) Google
 > 2
 'Google'
 
->>> cit.get_choice(['Apple', 'Google'])  # Enter string is ok too.
+>>> cit.get_choice(["Apple", "Google"])  # Enter string is ok too.
 |  1) Apple
 |  2) Google
 > Google
 'Google'
 
->>> cit.get_choice(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
+>>> cit.get_choice(["Apple", "Google"], exitable=True)  # Add a choice of exit in menu.
 |  1) Apple
 |  2) Google
 |  0) ** EXIT **
 > 0
 None
 
->>> cit.get_choices(['Apple', 'Google'])  # Multiple Selection
+>>> cit.get_choices(["Apple", "Google"])  # Multiple Selection
 |  1) [ ] Apple
 |  2) [ ] Google
 > 1  # Enter number to check or uncheck selections
@@ -152,7 +152,7 @@ None
 > 0  # Enter 0 when done.
 ['Apple', 'Google']  # return [] is no selections.
 
->>> cit.get_choices(['Apple', 'Google'], allable=True)  # Add a choice of select all in menu.
+>>> cit.get_choices(["Apple", "Google"], allable=True)  # Add a choice of select all in menu.
 |  a) ** ALL **
 |  1) [ ] Apple
 |  2) [ ] Google
@@ -164,7 +164,7 @@ None
 > 0
 ['Apple', 'Google']
 
->>> cit.get_choices(['Apple', 'Google'], exitable=True)  # Add a choice of exit in menu.
+>>> cit.get_choices(["Apple", "Google"], exitable=True)  # Add a choice of exit in menu.
 |  1) [ ] Apple
 |  2) [ ] Google
 |  0) ** EXIT **
@@ -175,17 +175,17 @@ None
 ## File IO
 
 ```python
->>> cit.read_file('/path/to/file')
-'File contents'
+>>> cit.read_file("/path/to/file")
+'Hello World'
 
->>> cit.read_file('/path/to/file', with_encoding=True)
-('File contents', 'utf-8')
+>>> cit.read_file("/path/to/file", with_encoding=True)
+('Hello World', 'utf-8')
 
->>> cit.write_file('/path/to/file', 'Contents')  # Append content to file.
-8  # writed bytes
+>>> cit.write_file("/path/to/file", "Hello World")  # Append content to file.
+11  # writed bytes
 
->>> cit.write_file('/path/to/file', 'Contents', overwrite=True)  # Overwrite if file exists.
-8  # writed bytes
+>>> cit.write_file("/path/to/file", "Hello World", overwrite=True)  # Overwrite if file exists.
+11  # writed bytes
 ```
 
 ## Controls
@@ -200,7 +200,7 @@ None
 >>> cit.bye(0)
 # exit with code 0
 
->>> cit.bye('Seeya')
+>>> cit.bye("Seeya")
 Seeya
 # exit
 ```
@@ -208,9 +208,9 @@ Seeya
 ## Decorators
 
 ```python
-@cit.as_session('Hello')
+@cit.as_session("Hello")
 def my_func():
-    cit.echo('World')
+    cit.echo("World")
 
 >>> my_func()
 +---------+
