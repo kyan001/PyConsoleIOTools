@@ -208,7 +208,7 @@ Seeya
 ## Decorators
 
 ```python
-@cit.as_session("Hello")
+@cit.as_session("Hello")  # String as the Title of the session.
 def my_func():
     cit.echo("World")
 
@@ -219,7 +219,7 @@ def my_func():
 | World
 `
 
-@cit.as_session
+@cit.as_session  # Use function name as the Title of the session.
 def underscore_orCamel():
     pass
 
@@ -228,4 +228,12 @@ def underscore_orCamel():
 | UNDERSCORE OR CAMEL() |
 +-----------------------+
 `
+
+@cit.deprecated_by(new_func):  # A function object as argument.
+def old_func(...):
+    pass  # code here won't be actually executed.
+
+>>> old_func(...)
+Function `old_func` is deprecated, now calling `new_func` instead.  # Warning printed to stderr.
+# new_func(...) is called
 ```

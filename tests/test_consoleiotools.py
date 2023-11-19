@@ -69,20 +69,21 @@ class test_consoleiotools(unittest.TestCase):
     def test_panel(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.panel("ABC", title="ABC", subtitle="ABC", expand=False, style="dim")
-            self.assertEqual(fake_out.getvalue().strip(), """
-╭─ ABC ─╮
-│ ABC   │
-╰─ ABC ─╯
-            """.strip())
+            self.assertEqual(fake_out.getvalue().strip(), "\n".join([
+                "╭─ ABC ─╮",
+                "│ ABC   │",
+                "╰─ ABC ─╯",
+            ]))
 
     def test_title(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.title("ABC")
-            self.assertEqual(fake_out.getvalue().strip(), """
-╭─────╮
-│ ABC │
-╰─────╯
-            """.strip())
+            self.assertEqual(fake_out.getvalue().strip(), "\n".join([
+                "╭─────╮",
+                "│ ABC │",
+                "╰─────╯",
+            ]))
+
 
     def test_ask(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -222,13 +223,13 @@ class test_consoleiotools(unittest.TestCase):
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
-            self.assertEqual(fake_out.getvalue().strip(), """
-╭──────╮
-│ FUNC │
-╰──────╯
-ABC
-╰
-            """.strip())
+            self.assertEqual(fake_out.getvalue().strip(), "\n".join([
+                "╭──────╮",
+                "│ FUNC │",
+                "╰──────╯",
+                "ABC",
+                "╰",
+            ]))
 
     def test_as_session_2(self):
         @cit.as_session('DEF')
@@ -237,13 +238,13 @@ ABC
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             func()
-            self.assertEqual(fake_out.getvalue().strip(), """
-╭─────╮
-│ DEF │
-╰─────╯
-ABC
-╰
-            """.strip())
+            self.assertEqual(fake_out.getvalue().strip(), "\n".join([
+                "╭─────╮",
+                "│ DEF │",
+                "╰─────╯",
+                "ABC",
+                "╰",
+            ]))
 
     def test_as_session_3(self):
         @cit.as_session
@@ -252,13 +253,23 @@ ABC
 
         with patch("sys.stdout", new=StringIO()) as fake_out:
             underscore_orCamel()
-            self.assertEqual(fake_out.getvalue().strip(), """
-╭─────────────────────╮
-│ UNDERSCORE OR CAMEL │
-╰─────────────────────╯
-ABC
-╰
-            """.strip())
+            self.assertEqual(fake_out.getvalue().strip(), "\n".join([
+                "╭─────────────────────╮",
+                "│ UNDERSCORE OR CAMEL │",
+                "╰─────────────────────╯",
+                "ABC",
+                "╰",
+            ]))
+
+    def test_deprecated_by(self):
+        @cit.deprecated_by(print)
+        def old_func(s: str):
+            print("Calling old_func()")
+
+        with patch("sys.stderr", new=StringIO()) as fake_err, patch("sys.stdout", new=StringIO()) as fake_out:
+            old_func("ABC")
+            self.assertEqual(fake_out.getvalue().strip(), "ABC")
+            self.assertIn("DeprecationWarning: Function `old_func` is deprecated, now calling `print` instead.", fake_err.getvalue().strip())
 
     def test_write_file(self):
         content = "3.1415926"

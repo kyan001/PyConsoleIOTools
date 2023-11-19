@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.4.0"
+__version__ = "4.5.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -68,6 +68,28 @@ def as_session(name_or_func):  # decorator
             return result
         return wrapper
     return get_func
+
+
+def deprecated_by(new_func: callable):  # decorator
+    """print deprecated info before the function call
+
+    Args:
+        func (callable): the function that replace the deprecated one
+
+    Returns:
+        callable: the decorated function
+    """
+    import sys
+    import contextlib
+
+    def call_new_func(old_func):
+        @wraps(old_func)
+        def wrapper(*args, **kwargs):
+            with contextlib.redirect_stdout(sys.stderr):
+                warn(f"DeprecationWarning: Function `{old_func.__name__}` is deprecated, now calling `{new_func.__name__}` instead.")
+            return new_func(*args, **kwargs)
+        return wrapper
+    return call_new_func
 
 
 def start():
