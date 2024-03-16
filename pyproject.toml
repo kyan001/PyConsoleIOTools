@@ -17,15 +17,11 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
 ]
-dependencies = ["rich"]
-dynamic = ["version"]
+dynamic = ["version", "dependencies", "optional-dependencies"]
 
 [[project.authors]]
 name = "Kyan"
 email = "kai@kyan001.com"
-
-[project.optional-dependencies]
-dev = ["build", "wheel", "pycodestyle"]
 
 [project.urls]
 Homepage = "https://github.com/kyan001/PyConsoleIOTools"
@@ -37,6 +33,8 @@ py-modules = ["consoleiotools"]
 
 [tool.setuptools.dynamic]
 version = {attr = "consoleiotools.__version__"}
+dependencies = {file = "requirements.txt"}
+optional-dependencies = {dev = {file = "requirements.optional.txt"}}
 
 [tool.setuptools.packages.find]
 exclude = ["contrib", "docs", "tests"]
