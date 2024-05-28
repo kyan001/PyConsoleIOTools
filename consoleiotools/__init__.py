@@ -10,7 +10,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.5"
+__version__ = "4.6.7"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -121,7 +121,7 @@ def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: st
         txt.append(f"({pre.capitalize()})", style=f"{style}-pre" if f"{style}-pre" in theme.styles else style)
         txt.append(" ")
     if indent:
-        indent_char_stem = "|   " if __ascii__ else "╵   "
+        indent_char_stem = "|   " if __ascii__ else "╎   "
         indent_char_branch = "|-- " if __ascii__ else "├── "
         indent_char_leaf = "`-- " if __ascii__ else "╰── "
         if indent < 0:
