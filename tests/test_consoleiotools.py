@@ -61,6 +61,21 @@ class test_consoleiotools(unittest.TestCase):
             cit.echo("ABC", bar="BAR")
             self.assertEqual(fake_out.getvalue(), "BAR ABC\n")
 
+    def test_echo_indent(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.echo("ABC", indent=1)
+            self.assertEqual(fake_out.getvalue(), "│ ├── ABC\n")
+
+    def test_echo_indent_level(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.echo("ABC", indent=2)
+            self.assertEqual(fake_out.getvalue(), "│ ├────── ABC\n")
+
+    def test_echo_indent_closure(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            cit.echo("ABC", indent=-1)
+            self.assertEqual(fake_out.getvalue(), "│ ╰── ABC\n")
+
     def test_markdown(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.markdown("### ABC")

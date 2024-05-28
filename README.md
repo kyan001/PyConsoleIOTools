@@ -35,6 +35,12 @@ print(cit.__version__)
 >>> cit.echo("Hello World", pre="say", bar="!")
 ! (Say) Hello World
 
+>>> cit.echo("Hello World", indent=1)  # indent level
+| +-- Hello World
+
+>>> cit.echo("Hello World", indent=-1)  # level < 0 means this is the last line of indents.
+| `-- Hello World
+
 >>> cit.ask("Hello World")
 | (?) Hello World
 
@@ -51,10 +57,10 @@ print(cit.__version__)
 | Hello World  # muted by dim
 
 >>> cit.print("[yellow]Hello World[/]")  # print with styles
-Hello World
+Hello World  # yellow
 
 >>> cit.print(cit.escape("[yellow]Hello World[/]"))  # escape `[` -> `\[` if not escaped. escape `\` -> `\\` if not used as escape char.
-[\]
+[yellow]Hello World[/]
 
 >>> cit.markdown("# Header")  # print markdown
 +--------------+

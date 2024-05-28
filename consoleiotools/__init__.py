@@ -9,27 +9,33 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.5.0"
+__version__ = "4.6.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
     "echo-bar": "",
     "echo-pre": "dim bright_white",
+    "echo-indent": "dim",
     "info": "",
     "info-bar": "",
     "info-pre": "dim",
+    "info-indent": "dim",
     "warn": "red",
     "warn-bar": "red",
     "warn-pre": "dim red",
+    "warn-indent": "dim",
     "err": "bright_white on red",
     "err-bar": "bright_red",
     "err-pre": "dim bright_red",
+    "err-indent": "dim",
     "ask": "yellow",
     "ask-bar": "yellow",
     "ask-pre": "dim yellow",
+    "ask-indent": "dim",
     "muted": "dim bright_white",
     "muted-bar": "dim white",
     "muted-pre": "dim white",
+    "muted-indent": "dim",
     "title": "bright_magenta",
     "pause": "bright_yellow",
     "choice-i": "yellow",
@@ -105,13 +111,23 @@ def br(count=1):
     print("\n" * (count - 1))
 
 
-def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", **options):
+def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", indent: int = 0, **options):
     txt = rich.text.Text()
     if bar:
         txt.append(f"{bar}", style=f"{style}-bar" if f"{style}-bar" in theme.styles else style)
         txt.append(" ")
     if pre:
         txt.append(f"({pre.capitalize()})", style=f"{style}-pre" if f"{style}-pre" in theme.styles else style)
+        txt.append(" ")
+    if indent:
+        indent_char = "-" if __ascii__ else "─"
+        if indent < 0:
+            indent = -indent
+            indent_char_start = "`" if __ascii__ else "╰"
+        else:
+            indent_char_start = "+" if __ascii__ else "├"
+        indent_deco = f"{indent_char_start}{indent_char * (indent * 4 - 2)}"
+        txt.append(f"{indent_deco}", style=f"{style}-indent" if f"{style}-indent" in theme.styles else style)
         txt.append(" ")
     contents = rich.text.Text(" ").join(rich.text.Text.from_markup(f"{arg}") for arg in args)
     contents.stylize(style)
