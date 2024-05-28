@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.6.0"
+__version__ = "4.6.1"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -111,7 +111,7 @@ def br(count=1):
     print("\n" * (count - 1))
 
 
-def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", indent: int = 0, **options):
+def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", indent: str = "", **options):
     txt = rich.text.Text()
     if bar:
         txt.append(f"{bar}", style=f"{style}-bar" if f"{style}-bar" in theme.styles else style)
@@ -120,15 +120,15 @@ def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: st
         txt.append(f"({pre.capitalize()})", style=f"{style}-pre" if f"{style}-pre" in theme.styles else style)
         txt.append(" ")
     if indent:
-        indent_char = "-" if __ascii__ else "─"
-        if indent < 0:
-            indent = -indent
-            indent_char_start = "`" if __ascii__ else "╰"
-        else:
-            indent_char_start = "+" if __ascii__ else "├"
-        indent_deco = f"{indent_char_start}{indent_char * (indent * 4 - 2)}"
+        indent_char_stem = "|   " if __ascii__ else "│   "
+        indent_char_branch = "+-- " if __ascii__ else "├── "
+        indent_char_leaf = "`-- " if __ascii__ else "╰── "
+        indent_deco = ""
+        for level in indent[:-1]:
+            indent_deco += indent_char_stem if level == "+" else "    "
+        else:  # when success
+            indent_deco += indent_char_branch if indent[-1] == "+" else indent_char_leaf
         txt.append(f"{indent_deco}", style=f"{style}-indent" if f"{style}-indent" in theme.styles else style)
-        txt.append(" ")
     contents = rich.text.Text(" ").join(rich.text.Text.from_markup(f"{arg}") for arg in args)
     contents.stylize(style)
     txt.append(contents)
