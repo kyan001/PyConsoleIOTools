@@ -36,7 +36,7 @@ print(cit.__version__)
 ! (Say) Hello World
 
 >>> cit.echo("Hello World", indent="+")  # indent, `+` means 1 level of indents
-| +-- Hello World
+| |-- Hello World
 
 >>> cit.echo("Hello World", indent="-")  # `-` means last line of indents.
 | `-- Hello World

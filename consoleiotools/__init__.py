@@ -9,7 +9,7 @@ import rich.traceback
 import rich.markdown
 import rich.box
 
-__version__ = "4.6.1"
+__version__ = "4.6.2"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -121,7 +121,7 @@ def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: st
         txt.append(" ")
     if indent:
         indent_char_stem = "|   " if __ascii__ else "│   "
-        indent_char_branch = "+-- " if __ascii__ else "├── "
+        indent_char_branch = "|-- " if __ascii__ else "├── "
         indent_char_leaf = "`-- " if __ascii__ else "╰── "
         indent_deco = ""
         for level in indent[:-1]:
