@@ -73,7 +73,7 @@ class test_consoleiotools(unittest.TestCase):
     def test_echo_indent_stem(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.echo("ABC", indent=2)
-            self.assertEqual(fake_out.getvalue(), "│ ╎   ├── ABC\n")
+            self.assertEqual(fake_out.getvalue(), "│ ╷   ├── ABC\n")
 
     def test_markdown(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
