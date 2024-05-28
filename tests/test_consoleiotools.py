@@ -1,4 +1,3 @@
-from typing import List
 import unittest
 import sys
 import os
@@ -63,18 +62,18 @@ class test_consoleiotools(unittest.TestCase):
 
     def test_echo_indent(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
-            cit.echo("ABC", indent="+")
+            cit.echo("ABC", indent=1)
             self.assertEqual(fake_out.getvalue(), "│ ├── ABC\n")
 
     def test_echo_indent_leaf(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
-            cit.echo("ABC", indent="-")
+            cit.echo("ABC", indent=-1)
             self.assertEqual(fake_out.getvalue(), "│ ╰── ABC\n")
 
     def test_echo_indent_stem(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
-            cit.echo("ABC", indent="+-+")
-            self.assertEqual(fake_out.getvalue(), "│ │       ├── ABC\n")
+            cit.echo("ABC", indent=2)
+            self.assertEqual(fake_out.getvalue(), "│ ╵   ├── ABC\n")
 
     def test_markdown(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -98,7 +97,6 @@ class test_consoleiotools(unittest.TestCase):
                 "│ ABC │",
                 "╰─────╯",
             ]))
-
 
     def test_ask(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
@@ -130,7 +128,7 @@ class test_consoleiotools(unittest.TestCase):
             cit.print("ABC")
             self.assertEqual(fake_out.getvalue(), "ABC\n")
 
-    def test_print(self):
+    def test_print_escape(self):
         with patch("sys.stdout", new=StringIO()) as fake_out:
             cit.print(cit.escape("[test]ABC"))
             self.assertEqual(fake_out.getvalue(), "[test]ABC\n")
@@ -173,10 +171,10 @@ class test_consoleiotools(unittest.TestCase):
             self.assertEqual(userinput, "answer")
 
     def test_get_input_strip(self):
-        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("  ABC  \n")):
+        with patch("sys.stdout", new=StringIO()), patch("sys.stdin", new=StringIO("  ABC  \n")):
             userinput = cit.get_input(strip=True)
             self.assertEqual(userinput, "ABC")
-        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("  ABC  \n")):
+        with patch("sys.stdout", new=StringIO()), patch("sys.stdin", new=StringIO("  ABC  \n")):
             userinput = cit.get_input(strip=False)
             self.assertEqual(userinput, "  ABC  ")
 
@@ -187,7 +185,7 @@ class test_consoleiotools(unittest.TestCase):
             self.assertIn("2) DEF", fake_out.getvalue())
 
     def test_get_choice_string(self):
-        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
+        with patch("sys.stdout", new=StringIO()), patch("sys.stdin", new=StringIO("ABC\n")):
             self.assertEqual(cit.get_choice(["ABC", "DEF"]), "ABC")
 
     def test_get_choices_done(self):
@@ -300,12 +298,15 @@ class test_consoleiotools(unittest.TestCase):
         content = "3.1415926"
         len_write = cit.write_file(self.TMP_FILE, content)
         content_read = cit.read_file(self.TMP_FILE)
+        self.assertGreater(len_write, 0)
         self.assertEqual(content_read, content)
 
     def test_read_file_with_encoding(self):
         content = "3.1415926"
         len_write = cit.write_file(self.TMP_FILE, content)
         content_read, encoding = cit.read_file(self.TMP_FILE, with_encoding=True)
+        self.assertGreater(len_write, 0)
+        self.assertEqual(content_read, content)
         self.assertEqual(encoding, "utf-8")
 
 

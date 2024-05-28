@@ -8,8 +8,9 @@ import rich.progress
 import rich.traceback
 import rich.markdown
 import rich.box
+import rich.markup
 
-__version__ = "4.6.2"
+__version__ = "4.6.5"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -76,7 +77,7 @@ def as_session(name_or_func):  # decorator
     return get_func
 
 
-def deprecated_by(new_func: callable):  # decorator
+def deprecated_by(new_func):  # decorator
     """print deprecated info before the function call
 
     Args:
@@ -111,7 +112,7 @@ def br(count=1):
     print("\n" * (count - 1))
 
 
-def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", indent: str = "", **options):
+def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", indent: int = 0, **options):
     txt = rich.text.Text()
     if bar:
         txt.append(f"{bar}", style=f"{style}-bar" if f"{style}-bar" in theme.styles else style)
@@ -120,14 +121,15 @@ def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: st
         txt.append(f"({pre.capitalize()})", style=f"{style}-pre" if f"{style}-pre" in theme.styles else style)
         txt.append(" ")
     if indent:
-        indent_char_stem = "|   " if __ascii__ else "│   "
+        indent_char_stem = "|   " if __ascii__ else "╵   "
         indent_char_branch = "|-- " if __ascii__ else "├── "
         indent_char_leaf = "`-- " if __ascii__ else "╰── "
-        indent_deco = ""
-        for level in indent[:-1]:
-            indent_deco += indent_char_stem if level == "+" else "    "
-        else:  # when success
-            indent_deco += indent_char_branch if indent[-1] == "+" else indent_char_leaf
+        if indent < 0:
+            indent = -indent
+            indent_deco = indent_char_leaf
+        else:
+            indent_deco = indent_char_branch
+        indent_deco = indent_char_stem * (indent - 1) + indent_deco
         txt.append(f"{indent_deco}", style=f"{style}-indent" if f"{style}-indent" in theme.styles else style)
     contents = rich.text.Text(" ").join(rich.text.Text.from_markup(f"{arg}") for arg in args)
     contents.stylize(style)
@@ -246,7 +248,7 @@ def get_choice(choices, exitable: bool = False) -> str:
         console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {EXIT_TEXT} {DECO_WORD}")
     user_choice = get_input().strip()
     if exitable and user_choice == EXIT_WORD:
-        return None
+        return ""
     if user_choice in choices:
         return user_choice
     if user_choice.isdigit():
@@ -314,13 +316,14 @@ def track(iterable, desc="", unit="", *args, **options):
                 progress.update(task, advance=1)
 
 
-def read_file(path: str, with_encoding: bool = False, **kwargs):
+def read_file(path: str, with_encoding: bool = False, **kwargs) -> tuple[str, str] | str:
     for enc in ("utf-8", "gbk", "cp1252", "windows-1252", "latin-1"):
         try:
             with open(path, mode="r", encoding=enc, **kwargs) as f:
                 return (f.read(), enc) if with_encoding else f.read()
         except UnicodeDecodeError:
             pass
+    return ("", "") if with_encoding else ""
 
 
 def write_file(path: str, content: str, overwrite: bool = False, **kwargs):

@@ -35,20 +35,14 @@ print(cit.__version__)
 >>> cit.echo("Hello World", pre="say", bar="!")
 ! (Say) Hello World
 
->>> cit.echo("Hello World", indent="+")  # indent, `+` means 1 level of indents
+>>> cit.echo("Hello World", indent=1)  # indent level, default is 0.
 | |-- Hello World
 
->>> cit.echo("Hello World", indent="-")  # `-` means last line of indents.
+>>> cit.echo("Hello World", indent=-1)  # level < 0 means the last line of this indent.
 | `-- Hello World
 
->>> cit.echo("Hello World", indent="+-+-")  # 4 levels of indents
-| |       |   `-- Hello World
-# |   |   |   |   |
-# |   |   |   |   `-- The content
-# |   |   |   `------ The last char `-` in `indent=`
-# |   |   `---------- The 3rd char `+` in `indent=`
-# |   `-------------- The 2nd char `-` in `indent=`
-# `------------------ The 1st char `+` in `indent=`
+>>> cit.echo("Hello World", indent=3)  # 3 level of indent.
+| |   |   |-- Hello World
 
 >>> cit.ask("Hello World")
 | (?) Hello World
