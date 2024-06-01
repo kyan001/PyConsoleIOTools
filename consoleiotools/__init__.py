@@ -256,7 +256,7 @@ def get_choice(choices, exitable: bool = False) -> str:
         if 0 <= index < len(choices):
             return choices[index]
     err("Please enter a valid choice.")
-    return get_choice(choices)
+    return get_choice(choices, exitable, default)
 
 
 def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
