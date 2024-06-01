@@ -10,16 +10,16 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.11"
+__version__ = "4.6.12"
 __ascii__ = False
 theme = rich.theme.Theme({
-    "echo": "bright_white",
+    "echo": "",
     "echo-bar": "",
-    "echo-pre": "dim bright_white",
+    "echo-pre": "dim",
     "echo-indent": "dim",
     "info": "",
-    "info-bar": "",
-    "info-pre": "dim",
+    "info-bar": "bright_white",
+    "info-pre": "dim bright_white",
     "info-indent": "dim",
     "warn": "red",
     "warn-bar": "red",
