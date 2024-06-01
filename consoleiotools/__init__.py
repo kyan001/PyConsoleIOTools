@@ -10,7 +10,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.10"
+__version__ = "4.6.11"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -229,7 +229,7 @@ def get_input(question: str = "", prompt: str = "> ", default: str = "", strip: 
     return answer
 
 
-def get_choice(choices, exitable: bool = False) -> str:
+def get_choice(choices, exitable: bool = False, default: str = "") -> str:
     """Get user choice from a given list
 
     Args:
@@ -245,8 +245,8 @@ def get_choice(choices, exitable: bool = False) -> str:
     for index, item in enumerate(choices, start=1):
         console.print(f"{BAR} [choice-i]{index:>{fill}}[/][dim])[/] [white]{item}[/]")
     if exitable:
-    user_choice = get_input().strip()
         console.print(f"{BAR} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO} {EXIT_TEXT} {DECO}")
+    user_choice = get_input(default=default).strip()
     if exitable and user_choice == EXIT_WORD:
         return ""
     if user_choice in choices:
