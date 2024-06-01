@@ -10,7 +10,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.9"
+__version__ = "4.6.10"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "bright_white",
@@ -290,7 +290,7 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
         elif exitable:  # no user selection, but exitable is on.
             console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {EXIT_TEXT} {DECO_WORD}")
         user_choice = get_input().strip()
-        if (user_choice == DONE_WORD or user_choice == EXIT_WORD):
+        if (user_choice == DONE_WORD or user_choice == EXIT_WORD or user_choice == ""):
             if exitable or len(user_choices) > 0:  # keep looping when not exitable and no user choices.
                 return user_choices
         if allable and user_choice == ALL_WORD:
