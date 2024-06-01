@@ -237,16 +237,16 @@ def get_choice(choices, exitable: bool = False) -> str:
         exitable: bool. Does `exit` is an option for user to select.
     """
     EXIT_WORD = "exit" if "0" in choices else "0"
-    DECO_WORD = "[dim]{}[/]".format("--" if __ascii__ else "──")
-    BAR_WORD = "|" if __ascii__ else "│"
+    DECO = f"[dim]{"--" if __ascii__ else "──"}[/]"
+    BAR = "|" if __ascii__ else "│"
     CMD_TEXT = "[{color}]{icon}[/] [choice-cmd]{text}[/]"
     EXIT_TEXT = CMD_TEXT.format(color="red", icon='~' if __ascii__ else '✗', text="EXIT")
     fill = max(len(EXIT_WORD), 2)
     for index, item in enumerate(choices, start=1):
-        console.print(f"{BAR_WORD} [choice-i]{index:>{fill}}[/][dim])[/] [white]{item}[/]")
+        console.print(f"{BAR} [choice-i]{index:>{fill}}[/][dim])[/] [white]{item}[/]")
     if exitable:
-        console.print(f"{BAR_WORD} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO_WORD} {EXIT_TEXT} {DECO_WORD}")
     user_choice = get_input().strip()
+        console.print(f"{BAR} [choice-i]{EXIT_WORD:>{fill}}[/][dim])[/] {DECO} {EXIT_TEXT} {DECO}")
     if exitable and user_choice == EXIT_WORD:
         return ""
     if user_choice in choices:
