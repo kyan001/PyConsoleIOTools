@@ -10,7 +10,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.12"
+__version__ = "4.6.13"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "",
@@ -237,7 +237,7 @@ def get_choice(choices, exitable: bool = False, default: str = "") -> str:
         exitable: bool. Does `exit` is an option for user to select.
     """
     EXIT_WORD = "exit" if "0" in choices else "0"
-    DECO = f"[dim]{"--" if __ascii__ else "──"}[/]"
+    DECO = f"[dim]{'--' if __ascii__ else '──'}[/]"
     BAR = "|" if __ascii__ else "│"
     CMD_TEXT = "[{color}]{icon}[/] [choice-cmd]{text}[/]"
     EXIT_TEXT = CMD_TEXT.format(color="red", icon='~' if __ascii__ else '✗', text="EXIT")
