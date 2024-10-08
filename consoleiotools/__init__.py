@@ -10,7 +10,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.14"
+__version__ = "4.6.15"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "",
@@ -43,7 +43,6 @@ theme = rich.theme.Theme({
     "choice-cmd": "yellow underline",
 })
 console = rich.console.Console(theme=theme)  # main output printer
-rich.traceback.install()
 
 
 def debug(show_locals: bool = True) -> None:
