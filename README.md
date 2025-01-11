@@ -76,7 +76,6 @@ Hello World  # yellow
 >>> cit.rule("Title", style="blue", align="center")  # print horizontal rule with Title. align = center|left|right
 ---------------- Title ----------------
 
-
 >>> cit.panel("Panel", title="Panel Title", subtitle="Panel Subtitle")  # print text in a panel
 +---------- Panel Title ----------+
 | Panel                           |  # full width
@@ -97,11 +96,17 @@ Hello World  # yellow
 # blank line
 # blank line
 
->>> for var in cit.track(iterables, "Progress"): pass
+>>> cit.start().title().br().end().pause()
+        .echo().ask().info().warn().err().mute()
+        .print().markdown().rule().panel()  # chaining
+...
+
+>>> for var in cit.track(iterables, "Progress"): pass  # track iterable progress
 | : Progress ---------------------===================  52% 0:00:52 - 52/100
 
 >>> cit.__ascii__ = True  # use ascii chars only.
 ```
+
 
 ## Get User Input
 
@@ -204,14 +209,18 @@ None
 | Press [Enter] to Continue...
 
 >>> cit.bye()
-# exit
+# exit with code 0 (Success)
 
->>> cit.bye(0)
-# exit with code 0
+>>> cit.bye(error=True)
+# exit with code 1 (Error)
 
 >>> cit.bye("Seeya")
-Seeya
-# exit
+| (Info) Seeya
+# exit with code 0 (Success)
+
+>>> cit.bye("Seeya", error=True)
+| (Error) Seeya
+# exit with code 1 (Error)
 ```
 
 ## Decorators

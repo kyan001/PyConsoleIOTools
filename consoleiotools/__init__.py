@@ -1,4 +1,5 @@
 from functools import wraps
+import sys
 
 import rich.console
 import rich.theme
@@ -10,7 +11,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "4.6.15"
+__version__ = "5.0.1"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "",
@@ -85,7 +86,6 @@ def deprecated_by(new_func):  # decorator
     Returns:
         callable: the decorated function
     """
-    import sys
     import contextlib
 
     def call_new_func(old_func):
@@ -100,15 +100,18 @@ def deprecated_by(new_func):  # decorator
 
 def start():
     br()
+    return sys.modules[__name__]  # chaining
 
 
 def end():
     console.print("`" if __ascii__ else "╰")
+    return sys.modules[__name__]  # chaining
 
 
 def br(count=1):
     """print 1 to N blank lines"""
     print("\n" * (count - 1))
+    return sys.modules[__name__]  # chaining
 
 
 def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: str = "echo", indent: int = 0, **options):
@@ -134,11 +137,13 @@ def echo(*args, pre: str = "", bar: str = "|" if __ascii__ else "│", style: st
     contents.stylize(style)
     txt.append(contents)
     console.print(txt, **options)
+    return sys.modules[__name__]  # chaining
 
 
 def title(*args, **options):
     """print something like a title"""
     console.print(rich.panel.Panel((" ".join([f"{arg}" for arg in args])).upper().strip(), highlight=True, expand=False, box=rich.box.ASCII if __ascii__ else rich.box.ROUNDED), **options)
+    return sys.modules[__name__]  # chaining
 
 
 def ask(*args, **options):
@@ -163,18 +168,21 @@ def mute(*args, **options):
 
 def print(*args, **options):
     console.print(*args, **options)
+    return sys.modules[__name__]  # chaining
 
 
 def markdown(*args, **options):
     console.print(rich.markdown.Markdown(" ".join([f"{arg}" for arg in args])))
+    return sys.modules[__name__]  # chaining
 
 
 def rule(title: str, *args, **options):
     console.rule(title, *args, characters="-" if __ascii__ else "─", **options)
+    return sys.modules[__name__]  # chaining
 
 
 def panel(txt, title="", subtitle="", expand=True, highlight=True, style="", **options):
-    return console.print(
+    console.print(
         rich.panel.Panel(
             txt,
             title=title,
@@ -187,21 +195,38 @@ def panel(txt, title="", subtitle="", expand=True, highlight=True, style="", **o
             **options
         )
     )
+    return sys.modules[__name__]  # chaining
 
 
 def escape(txt: str) -> str:
+    """Escapes text so that it won't be interpreted as markup for rich.markup.
+
+    Args:
+        txt (str): The original text to escape.
+
+    Returns:
+        str: The escaped text. All squared brackets `[]` escaped.
+    """
     return rich.markup.escape(txt)
 
 
 def pause(msg="Press [Enter] to Continue..."):
     """press to continue"""
     with console.status(f"[pause]{escape(msg)}", spinner="point", spinner_style="pause"):
-        return input()
+        input()
+    return sys.modules[__name__]  # chaining
 
 
-def bye(msg=""):
-    """print msg and exit"""
-    exit(msg)
+def bye(message: str = "", error: bool = False):
+    """print a message and exit the program"""
+    if error:
+        if message:
+            err(message)
+        exit(1)
+    else:
+        if message:
+            info(message)
+        exit(0)
 
 
 def get_input(question: str = "", prompt: str = "> ", default: str = "", strip: bool = True) -> str:

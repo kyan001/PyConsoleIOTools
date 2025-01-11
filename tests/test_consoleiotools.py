@@ -6,7 +6,7 @@ from unittest.mock import patch
 from ansiesc import StringIO
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import consoleiotools as cit  # noqa: linter (pycodestyle) should not lint this line.
+import consoleiotools as cit  # noqa: linter should not lint this line.
 
 
 class test_consoleiotools(unittest.TestCase):
@@ -144,7 +144,57 @@ class test_consoleiotools(unittest.TestCase):
             self.assertEqual("0\n1\n2\n3\n4\n\n", fake_out.getvalue())
 
     def test_bye(self):
-        self.assertRaises(SystemExit, cit.bye, None)
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            try:
+                cit.bye()
+            except SystemExit as e:
+                self.assertEqual(e.code, 0)
+                self.assertEqual("", fake_out.getvalue())
+            except Exception as e:
+                self.fail(f"cit.bye() raised an unexpected exception: {e}")
+            else:
+                self.fail("SystemExit not raised")
+
+    def test_bye_error(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            try:
+                cit.bye(error=True)
+            except SystemExit as e:
+                self.assertEqual(e.code, 1)
+                self.assertEqual("", fake_out.getvalue())
+            except Exception as e:
+                self.fail(f"cit.bye() raised an unexpected exception: {e}")
+            else:
+                self.fail("SystemExit not raised")
+
+    def test_bye_message_info(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            try:
+                cit.bye("Test Text")
+            except SystemExit as e:
+                self.assertEqual(e.code, 0)
+                self.assertIn("(Info) Test Text", fake_out.getvalue())
+            except Exception as e:
+                self.fail(f"cit.bye() raised an unexpected exception: {e}")
+            else:
+                self.fail("SystemExit not raised")
+
+    def test_bye_message_error(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out:
+            try:
+                cit.bye("Test Text", error=True)
+            except SystemExit as e:
+                self.assertEqual(e.code, 1)
+                self.assertIn("(Error) Test Text", fake_out.getvalue())
+            except Exception as e:
+                self.fail(f"cit.bye() raised an unexpected exception: {e}")
+            else:
+                self.fail("SystemExit not raised")
+
+    def test_chaining(self):
+        with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("\n")):
+            cit.pause().start().end().br().echo("A").title("B").ask("C").info("D").warn("E").err("F").mute("G").print("H").markdown("I").rule("J").panel("K")
+            self.assertIn("K", fake_out.getvalue())
 
     def test_get_input(self):
         with patch("sys.stdout", new=StringIO()) as fake_out, patch("sys.stdin", new=StringIO("ABC\n")):
