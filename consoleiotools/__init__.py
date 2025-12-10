@@ -284,6 +284,16 @@ def get_choice(choices, exitable: bool = False, default: str = "") -> str:
 
 
 def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
+    """Get user choices from a given iterable.
+
+    Args:
+        choices: iterable. The list that user can choose from. Note: `choices` implicitly converted to a list.
+        allable: bool. Does `all` is an option for user to select.
+        exitable: bool. Does `exit` is an option for user to select.
+
+    Returns:
+        list: A list of user choices. If user select `exit` with no choices, an empty list is returned.
+    """
     def toggle_listitem(itm, lst: list):
         if itm in lst:
             lst.remove(itm)
@@ -291,6 +301,9 @@ def get_choices(choices, allable: bool = False, exitable: bool = False) -> list:
             lst.append(itm)
         return lst
 
+    if not choices:
+        raise ValueError("Choices cannot be empty.")
+    choices = list(choices)  # ensure choices is a list
     EXIT_WORD = "exit" if "0" in choices else "0"
     DONE_WORD = "done" if "0" in choices else "0"
     ALL_WORD = "all" if "a" in choices else "a"
