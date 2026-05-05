@@ -59,6 +59,9 @@ print(cit.__version__)
 >>> cit.mute("Hello World")
 | Hello World  # muted by dim
 
+>>> cit.debug("Hello World")
+| (Debug) Hello World  # with blue background
+
 >>> cit.print("[yellow]Hello World[/]")  # print with styles
 Hello World  # yellow
 

@@ -11,7 +11,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "5.1.0"
+__version__ = "6.0.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "",
@@ -38,6 +38,10 @@ theme = rich.theme.Theme({
     "muted-bar": "dim white",
     "muted-pre": "dim white",
     "muted-indent": "dim",
+    "debug": "on blue",
+    "debug-bar": "dim",
+    "debug-pre": "dim",
+    "debug-indent": "dim",
     "title": "bright_magenta",
     "pause": "bright_yellow",
     "choice-i": "yellow",
@@ -96,11 +100,6 @@ def deprecated_by(new_func):  # decorator
             return new_func(*args, **kwargs)
         return wrapper
     return call_new_func
-
-
-@deprecated_by(pretty_traceback)
-def debug(show_locals: bool = True) -> None:
-    pass
 
 
 def start():
@@ -169,6 +168,10 @@ def err(*args, **options):
 
 def mute(*args, **options):
     return echo(*args, style="muted", **options)
+
+
+def debug(*args, **options):
+    return echo(*args, pre="debug", style="debug", **options)
 
 
 def print(*args, **options):
