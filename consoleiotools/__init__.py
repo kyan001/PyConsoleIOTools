@@ -11,7 +11,7 @@ import rich.markdown
 import rich.box
 import rich.markup
 
-__version__ = "5.0.1"
+__version__ = "5.1.0"
 __ascii__ = False
 theme = rich.theme.Theme({
     "echo": "",
@@ -46,7 +46,7 @@ theme = rich.theme.Theme({
 console = rich.console.Console(theme=theme)  # main output printer
 
 
-def debug(show_locals: bool = True) -> None:
+def pretty_traceback(show_locals: bool = True) -> None:
     rich.traceback.install(show_locals=show_locals)
 
 
@@ -96,6 +96,11 @@ def deprecated_by(new_func):  # decorator
             return new_func(*args, **kwargs)
         return wrapper
     return call_new_func
+
+
+@deprecated_by(pretty_traceback)
+def debug(show_locals: bool = True) -> None:
+    pass
 
 
 def start():
